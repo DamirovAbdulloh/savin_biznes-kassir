@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-gray-900 antialiased;
+  }
+}
+
+@keyframes stat-bar-grow {
+  from {
+    transform: scaleY(0.2);
+    opacity: 0.4;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+.stat-bar {
+  transform-origin: bottom;
+  animation: stat-bar-grow 0.6s ease-out both;
+}
+
+.stat-fill {
+  transition: width 0.6s ease-out;
+}
+
+.login-bg {
+  background: linear-gradient(
+    160deg,
+    #eaffe0 0%,
+    #cdf5b0 35%,
+    #8ee668 65%,
+    #4fb930 100%
+  );
+}
+
+/* ============================================================
+   Skrollbarlarni korinmas qilish — scroll funksiyasi ishlayveradi
+   (foydalanuvchi talabi: barcha korinib turgan skrollbarlar yashirilsin)
+   ============================================================ */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* eski Edge/IE */
+}
+*::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/yangi Edge */
+  width: 0;
+  height: 0;
+}
+
