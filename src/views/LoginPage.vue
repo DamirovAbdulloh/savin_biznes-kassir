@@ -26,7 +26,7 @@ async function handleSubmit() {
       // Backend javob bermadi — server ishga tushmagan yoki manzil noto'g'ri.
       // Avval bu holat ham "parol noto'g'ri" deb ko'rsatilardi va chalg'itardi.
       errorMessage.value =
-        "Serverga ulanib bo'lmadi. Backend (http://localhost:8000) ishga tushganini tekshiring.";
+        "Serverga ulanib bo'lmadi. Internet aloqasini yoki backend ishlab turganini tekshiring.";
     } else if (e.response.status === 400 || e.response.status === 401) {
       errorMessage.value =
         e.response.data?.detail ||
