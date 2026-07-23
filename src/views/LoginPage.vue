@@ -53,7 +53,7 @@ function copyPhone() {
       <!-- Logo -->
       <div class="mb-6 flex h-24 w-24 items-center justify-center rounded-2xl text-white"
         style="background: linear-gradient(135deg, #6fd94a, #3fae2a);">
-        <img src="../images/Vector.svg" alt="Vector" />
+        <img src="../images/Vector.svg?url" alt="Vector" />
       </div>
 
       <h1 class="text-3xl font-bold leading-tight text-gray-900">
@@ -136,7 +136,7 @@ function copyPhone() {
       <div class="w-full max-w-sm rounded-3xl bg-white p-6 text-center shadow-2xl">
         <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl text-white text-2xl"
           style="background: linear-gradient(135deg, #6fd94a, #3fae2a);">
-          <img class="w-8 h-8" src="../images/Vector.svg" alt="Vector" />
+          <img class="w-8 h-8" src="../images/Vector.svg?url" alt="Vector" />
         </div>
         <h2 class="text-2xl font-semibold text-gray-900">Qo'llab-quvvatlash</h2>
         <p class="mt-2 text-sm text-gray-500">
