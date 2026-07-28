@@ -43,6 +43,27 @@ export const dashboardApi = {
 // foiz biriktirilgan. Uni o'zgartirish faqat "so'rov yuborish -> admin tasdiqlaydi"
 // jarayoni orqali bo'ladi (discounts/urls.py).
 export const discountApi = {
+  // ---- Chegirma turlari (kartalar): to'liq CRUD ----
+  async list() {
+    const { data } = await client.get("my-business/discounts/");
+    return Array.isArray(data) ? data : data.results || [];
+  },
+  async create(payload) {
+    const { data } = await client.post("my-business/discounts/", payload);
+    return data;
+  },
+  async update(id, payload) {
+    const { data } = await client.patch(`my-business/discounts/${id}/`, payload);
+    return data;
+  },
+  async remove(id) {
+    await client.delete(`my-business/discounts/${id}/`);
+  },
+  async toggle(id) {
+    const { data } = await client.post(`my-business/discounts/${id}/toggle/`);
+    return data;
+  },
+
   async me() {
     // { current_percent, pending_request }
     const { data } = await client.get("my-business/discount/");

@@ -392,7 +392,7 @@ async function exportCsv() {
           v-if="filtered.length"
           class="mt-4 flex items-center justify-between text-sm"
         >
-          <span class="text-muted">Natija {{ filtered.length }} dan</span>
+          <span class="text-muted">Natija {{ filtered.length }} ta</span>
           <div class="flex items-center gap-3">
             <button
               class="flex h-8 w-8 items-center justify-center rounded-full border border-border transition-all duration-150 hover:bg-secondary active:scale-90 disabled:opacity-40 disabled:hover:bg-transparent"
