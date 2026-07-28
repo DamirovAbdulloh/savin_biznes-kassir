@@ -10,387 +10,443 @@ const toast = useToastStore();
 
 const items = ref([]);
 const loading = ref(true);
-const addOpen = ref(false);
-const editItem = ref(null);
-const deleteItem = ref(null);
-const savingAdd = ref(false);
-const savingEdit = ref(false);
+
+// Har bir kartadagi parol standart holda yashirin turadi
+const revealed = reactive({});
+
+const activeCount = computed(() => items.value.filter((c) => c.is_active).length);
+
+// ---- Qo'shish / tahrirlash ----
+const formOpen = ref(false);
+const editing = ref(null);
+const saving = ref(false);
+const form = reactive({
+  full_name: "",
+  phone_digits: "",
+  login: "",
+  password: "",
+  is_active: true,
+});
+const errors = reactive({});
+
+// ---- O'chirish ----
+const deleteTarget = ref(null);
 const deleting = ref(false);
 
-// MUHIM: backend Cashier modelida faqat full_name, is_active, added_at bor.
-// "phone", "login ko'rsatish/parolni ko'rsatish" va "scans" kabi maydonlar
-// backend'da yo'q, shu sabab olib tashlandi. Kassir yaratishda email+password
-// bilan alohida foydalanuvchi hisobi ochiladi (buni keyin o'zgartirib bo'lmaydi).
-const addForm = reactive({ full_name: "", email: "", password: "" });
-const editForm = reactive({ full_name: "", is_active: true });
+const PHONE_PREFIX = "+998";
 
-function resetAddForm() {
-  addForm.full_name = "";
-  addForm.email = "";
-  addForm.password = "";
+function formatPhone(digits) {
+  const d = (digits || "").slice(0, 9);
+  return [d.slice(0, 2), d.slice(2, 5), d.slice(5, 7), d.slice(7, 9)].filter(Boolean).join(" ");
 }
-
-function initials(name) {
-  return (name || "?")
-    .split(" ")
-    .map((p) => p[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+const phoneDisplay = computed(() => formatPhone(form.phone_digits));
+function onPhoneInput(e) {
+  let d = e.target.value.replace(/\D/g, "");
+  // To'liq raqam qo'yilsa davlat kodini olib tashlaymiz
+  if (d.length > 9 && d.startsWith("998")) d = d.slice(3);
+  form.phone_digits = d.slice(0, 9);
+  e.target.value = formatPhone(form.phone_digits);
 }
-
-const activeCount = computed(
-  () => items.value.filter((c) => c.is_active).length,
-);
 
 async function load() {
   loading.value = true;
   try {
     items.value = await cashiersApi.list();
+  } catch {
+    toast.error("Kassirlarni yuklab bo'lmadi");
   } finally {
     loading.value = false;
   }
 }
 onMounted(load);
 
+function openCreate() {
+  editing.value = null;
+  Object.assign(form, {
+    full_name: "",
+    phone_digits: "",
+    login: "",
+    password: "",
+    is_active: true,
+  });
+  Object.keys(errors).forEach((k) => delete errors[k]);
+  formOpen.value = true;
+}
+
 function openEdit(c) {
-  editItem.value = c;
-  editForm.full_name = c.full_name;
-  editForm.is_active = c.is_active;
+  editing.value = c;
+  Object.assign(form, {
+    full_name: c.full_name,
+    phone_digits: (c.phone || "").replace(/\D/g, "").slice(-9),
+    login: c.login || "",
+    password: "",
+    is_active: c.is_active,
+  });
+  Object.keys(errors).forEach((k) => delete errors[k]);
+  formOpen.value = true;
 }
 
-async function submitAdd() {
-  savingAdd.value = true;
-  try {
-    await cashiersApi.create({ ...addForm });
-    toast.success("Kassir qo'shildi");
-    addOpen.value = false;
-    resetAddForm();
-    await load();
-  } catch (e) {
-    toast.error(e.response?.data?.email?.[0] || "Xatolik yuz berdi");
-  } finally {
-    savingAdd.value = false;
+function validate() {
+  Object.keys(errors).forEach((k) => delete errors[k]);
+  if (!form.full_name.trim()) errors.full_name = "Ism familiyani kiriting.";
+  if (form.phone_digits && form.phone_digits.length !== 9)
+    errors.phone = "Telefon raqamini to'liq kiriting (9 ta raqam).";
+  if (!editing.value) {
+    if (!form.login.trim()) errors.login = "Loginni kiriting.";
+    else if (!/^[A-Za-z0-9._-]{3,}$/.test(form.login.trim()))
+      errors.login = "Login kamida 3 ta belgi: harf, raqam va . _ -";
+    if (!form.password || form.password.length < 6)
+      errors.password = "Parol kamida 6 ta belgidan iborat bo'lsin.";
   }
+  return Object.keys(errors).length === 0;
 }
 
-async function submitEdit() {
-  savingEdit.value = true;
+async function save() {
+  if (!validate()) return;
+  saving.value = true;
   try {
-    await cashiersApi.update(editItem.value.id, { ...editForm });
-    toast.success("Kassir yangilandi");
-    editItem.value = null;
+    const phone = form.phone_digits ? `${PHONE_PREFIX}${form.phone_digits}` : "";
+    if (editing.value) {
+      // Login kirish uchun ishlatilgani sabab tahrirlashda o'zgarmaydi
+      await cashiersApi.update(editing.value.id, {
+        full_name: form.full_name.trim(),
+        phone,
+        is_active: form.is_active,
+      });
+      toast.success("Kassir ma'lumotlari yangilandi");
+    } else {
+      await cashiersApi.create({
+        full_name: form.full_name.trim(),
+        phone,
+        login: form.login.trim(),
+        password: form.password,
+        is_active: form.is_active,
+      });
+      toast.success("Yangi kassir qo'shildi");
+    }
+    formOpen.value = false;
     await load();
   } catch (e) {
-    toast.error("Xatolik yuz berdi");
+    const d = e.response?.data || {};
+    if (d.login) errors.login = [].concat(d.login)[0];
+    if (d.password) errors.password = [].concat(d.password)[0];
+    if (d.full_name) errors.full_name = [].concat(d.full_name)[0];
+    if (!d.login && !d.password && !d.full_name) toast.error("Xatolik yuz berdi");
   } finally {
-    savingEdit.value = false;
+    saving.value = false;
   }
 }
 
 async function confirmDelete() {
   deleting.value = true;
   try {
-    await cashiersApi.remove(deleteItem.value.id);
-    toast.success("Kassir o'chirildi");
-    deleteItem.value = null;
+    const name = deleteTarget.value.full_name;
+    await cashiersApi.remove(deleteTarget.value.id);
+    toast.success(`"${name}" o'chirildi`);
+    deleteTarget.value = null;
     await load();
-  } catch (e) {
-    toast.error("Xatolik yuz berdi");
+  } catch {
+    toast.error("O'chirib bo'lmadi");
   } finally {
     deleting.value = false;
   }
 }
 
 async function toggleActive(c) {
+  const prev = c.is_active;
+  c.is_active = !prev;
   try {
-    await cashiersApi.update(c.id, { is_active: !c.is_active });
-    await load();
-  } catch (e) {
-    toast.error("Xatolik yuz berdi");
+    await cashiersApi.update(c.id, { is_active: c.is_active });
+  } catch {
+    c.is_active = prev;
+    toast.error("Holatni o'zgartirib bo'lmadi");
   }
 }
 
-function fmtDate(d) {
-  if (!d) return "";
-  return new Date(d).toLocaleDateString("uz-UZ");
+function initials(name) {
+  return (name || "?")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+}
+function fmtDate(iso) {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
+}
+function fmtPhone(p) {
+  const d = (p || "").replace(/\D/g, "").slice(-9);
+  return d ? `${PHONE_PREFIX} ${formatPhone(d)}` : "—";
 }
 </script>
 
 <template>
   <DashboardLayout>
-    <div class="space-y-4 page-enter">
-      <AppCard class="flex items-center justify-between p-5">
+    <div class="space-y-4">
+      <!-- Sarlavha -->
+      <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 class="text-xl font-bold tracking-tight">Kassirlar</h1>
-          <p class="text-xs text-muted">
+          <h1 class="text-xl font-bold">Kassirlar</h1>
+          <p class="mt-0.5 text-xs text-muted">
             Jami: {{ items.length }} ta kassir /
-            <span class="font-medium text-success"
-              >{{ activeCount }} ta Faol</span
-            >
+            <span class="font-semibold text-success">{{ activeCount }} ta Faol</span>
           </p>
         </div>
         <button
-          class="flex items-center gap-1 rounded-full bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md active:scale-95"
-          @click="
-            resetAddForm();
-            addOpen = true;
-          "
+          class="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-md active:scale-95"
+          @click="openCreate"
         >
           <span class="text-base leading-none">+</span> Qo'shish
         </button>
-      </AppCard>
+      </div>
 
-      <!-- Loading skeleton -->
-      <div v-if="loading" class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-        <AppCard v-for="i in 6" :key="'sk' + i" class="p-4">
-          <div class="animate-pulse space-y-3">
-            <div class="flex items-center gap-2">
-              <div class="h-9 w-9 rounded-full bg-secondary"></div>
-              <div class="flex-1 space-y-1.5">
-                <div class="h-3 w-2/3 rounded bg-secondary"></div>
-                <div class="h-2.5 w-1/3 rounded bg-secondary"></div>
-              </div>
-            </div>
-            <div class="h-14 rounded-lg bg-secondary"></div>
-          </div>
+      <div v-if="loading" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <AppCard v-for="n in 3" :key="n" class="p-5">
+          <div class="skeleton h-5 w-32 rounded"></div>
+          <div class="skeleton mt-3 h-3 w-40 rounded"></div>
+          <div class="skeleton mt-6 h-16 w-full rounded"></div>
         </AppCard>
       </div>
 
-      <TransitionGroup
-        v-else
-        tag="div"
-        name="card"
-        class="grid gap-3 md:grid-cols-2 lg:grid-cols-3"
-      >
+      <AppCard v-else-if="!items.length" class="p-10 text-center">
+        <p class="text-sm font-medium">Hozircha kassir qo'shilmagan</p>
+        <p class="mt-1 text-xs text-muted">"Qo'shish" tugmasi orqali kassir qo'shing.</p>
+      </AppCard>
+
+      <!-- Kassir kartalari -->
+      <div v-else class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <AppCard
           v-for="(c, i) in items"
           :key="c.id"
-          class="group p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
-          :style="{ transitionDelay: (i % 6) * 20 + 'ms' }"
+          class="reveal flex flex-col p-5"
+          :style="{ '--d': i * 60 + 'ms' }"
         >
-          <div class="mb-3 flex items-start justify-between">
-            <div class="flex items-center gap-2">
-              <span
-                class="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-sm font-semibold text-accent-foreground transition-transform duration-200 group-hover:scale-105"
-              >
-                {{ initials(c.full_name) }}
-              </span>
-              <div>
-                <p class="font-semibold leading-tight">{{ c.full_name }}</p>
-                <p class="text-xs text-muted">
-                  Qo'shilgan: {{ fmtDate(c.added_at) }}
-                </p>
-              </div>
+          <div class="flex items-start gap-3">
+            <div
+              class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-accent-foreground"
+            >
+              {{ initials(c.full_name) }}
             </div>
-            <span class="flex items-center text-xs font-medium">
-              <span
-                class="mr-1 inline-block h-2 w-2 rounded-full"
-                :class="
-                  c.is_active ? 'bg-success animate-pulse-dot' : 'bg-muted'
-                "
-              ></span>
-              {{ c.is_active ? "Faol" : "Nofaol" }}
-            </span>
-          </div>
-
-          <div
-            class="mb-3 flex items-center justify-between rounded-lg bg-secondary/60 px-3 py-2 text-xs"
-          >
-            <span class="text-muted">Holati</span>
-            <label class="relative inline-flex cursor-pointer items-center">
-              <input
-                type="checkbox"
-                class="peer sr-only"
-                :checked="c.is_active"
-                @change="toggleActive(c)"
-              />
-              <div
-                class="h-5 w-9 rounded-full bg-muted/40 transition-colors duration-200 peer-checked:bg-success"
-              ></div>
-              <div
-                class="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform duration-200 peer-checked:translate-x-4"
-              ></div>
-            </label>
-          </div>
-
-          <div class="flex gap-2">
+            <div class="min-w-0 flex-1">
+              <h3 class="truncate font-bold">{{ c.full_name }}</h3>
+              <p class="truncate text-xs text-muted">{{ fmtPhone(c.phone) }}</p>
+            </div>
             <button
-              class="flex flex-1 items-center justify-center gap-1 rounded-full border border-border py-2 text-sm font-medium transition-all duration-150 hover:bg-secondary active:scale-95"
+              class="flex shrink-0 items-center gap-1.5 text-xs font-medium"
+              :title="c.is_active ? 'Nofaol qilish' : 'Faol qilish'"
+              @click="toggleActive(c)"
+            >
+              <span :class="['h-2 w-2 rounded-full', c.is_active ? 'bg-success' : 'bg-gray-400']" />
+              <span :class="c.is_active ? 'text-success' : 'text-muted'">
+                {{ c.is_active ? "Faol" : "Nofaol" }}
+              </span>
+            </button>
+          </div>
+
+          <!-- Statistika -->
+          <div class="mt-4 grid grid-cols-2 gap-2">
+            <div class="rounded-xl bg-secondary p-3">
+              <p class="text-lg font-bold">{{ c.scans_count ?? 0 }}</p>
+              <p class="text-[11px] text-muted">Skaner</p>
+            </div>
+            <div class="rounded-xl bg-secondary p-3">
+              <p class="text-sm font-bold">{{ fmtDate(c.added_at) }}</p>
+              <p class="text-[11px] text-muted">Qo'shildi</p>
+            </div>
+          </div>
+
+          <!-- Kirish ma'lumotlari -->
+          <div class="mt-2 rounded-xl bg-secondary p-3">
+            <p class="text-[11px] text-muted">Login</p>
+            <p class="truncate text-sm font-semibold">{{ c.login || c.email || "—" }}</p>
+            <p class="mt-2 text-[11px] text-muted">Parol</p>
+            <div class="flex items-center justify-between gap-2">
+              <span class="truncate font-mono text-sm">
+                {{
+                  c.password ? (revealed[c.id] ? c.password : "•".repeat(c.password.length)) : "—"
+                }}
+              </span>
+              <button
+                v-if="c.password"
+                class="shrink-0 text-muted transition-colors hover:text-gray-900"
+                :title="revealed[c.id] ? 'Yashirish' : `Ko'rsatish`"
+                @click="revealed[c.id] = !revealed[c.id]"
+              >
+                {{ revealed[c.id] ? "🙈" : "👁" }}
+              </button>
+            </div>
+          </div>
+
+          <div class="mt-auto flex items-center gap-2 pt-4">
+            <button
+              class="h-10 flex-1 rounded-lg border border-border text-sm font-medium transition-colors hover:bg-secondary"
               @click="openEdit(c)"
             >
               ✎ Tahrirlash
             </button>
             <button
-              class="flex flex-1 items-center justify-center gap-1 rounded-full border border-destructive/30 py-2 text-sm font-medium text-destructive transition-all duration-150 hover:bg-red-50 active:scale-95"
-              @click="deleteItem = c"
+              class="h-10 flex-1 rounded-lg bg-red-50 text-sm font-medium text-destructive transition-colors hover:bg-red-100"
+              @click="deleteTarget = c"
             >
               🗑 O'chirish
             </button>
           </div>
         </AppCard>
-      </TransitionGroup>
-
-      <p
-        v-if="!loading && !items.length"
-        class="col-span-full py-12 text-center text-muted fade-in-up"
-      >
-        Hozircha kassir yo'q
-      </p>
+      </div>
     </div>
 
+    <!-- ===== Qo'shish / Tahrirlash ===== -->
     <AppModal
-      :open="addOpen"
-      title="Yangi kassir qo'shish"
-      @close="addOpen = false"
+      :open="formOpen"
+      :title="editing ? 'Kassirni tahrirlash' : `Yangi kassir qo'shish`"
+      @close="formOpen = false"
     >
-      <form class="space-y-3" @submit.prevent="submitAdd">
-        <div>
-          <label class="text-sm font-medium">Ism familiya</label>
-          <input
-            v-model="addForm.full_name"
-            required
-            placeholder="Ism familiya"
-            class="mt-1 h-11 w-full rounded-lg border border-border bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
-          />
-        </div>
-        <div>
-          <label class="text-sm font-medium"
-            >Email (login sifatida ishlatiladi)</label
-          >
-          <input
-            v-model="addForm.email"
-            type="email"
-            required
-            placeholder="kassir@biznes.uz"
-            class="mt-1 h-11 w-full rounded-lg border border-border bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
-          />
-        </div>
-        <div>
-          <label class="text-sm font-medium">Parol</label>
-          <input
-            v-model="addForm.password"
-            type="password"
-            required
-            placeholder="Parol"
-            class="mt-1 h-11 w-full rounded-lg border border-border bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
-          />
-        </div>
-        <p class="text-xs text-muted">
-          Parolni keyinchalik bu paneldan ko'rish yoki o'zgartirish mumkin emas
-          — uni kassirga xabar qiling.
+      <form class="space-y-3" @submit.prevent="save">
+        <p class="text-[11px] text-muted">
+          * belgisi bilan belgilangan maydonlar to'ldirilishi shart
         </p>
-        <div class="flex gap-2 pt-1">
-          <button
-            type="button"
-            class="h-11 flex-1 rounded-full border border-border text-sm font-medium transition-colors duration-150 hover:bg-secondary"
-            @click="addOpen = false"
-          >
-            Bekor qilish
-          </button>
-          <button
-            type="submit"
-            :disabled="savingAdd"
-            class="h-11 flex-1 rounded-full bg-primary text-sm font-semibold text-primary-foreground transition-all duration-150 hover:bg-primary/90 active:scale-95 disabled:opacity-60"
-          >
-            <span
-              v-if="savingAdd"
-              class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground align-middle"
-            ></span>
-            <span v-else>Qo'shish</span>
-          </button>
-        </div>
-      </form>
-    </AppModal>
 
-    <AppModal
-      :open="!!editItem"
-      title="Kassirni tahrirlash"
-      @close="editItem = null"
-    >
-      <form class="space-y-3" @submit.prevent="submitEdit">
         <div>
-          <label class="text-sm font-medium">Ism familiya</label>
+          <label class="text-sm font-medium">Ism Familiya *</label>
           <input
-            v-model="editForm.full_name"
-            required
-            class="mt-1 h-11 w-full rounded-lg border border-border bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
+            v-model="form.full_name"
+            placeholder="Ism Familiya"
+            :class="[
+              'mt-1 h-11 w-full rounded-lg border bg-input px-3 text-sm focus:ring-2 focus:ring-primary/40',
+              errors.full_name ? 'border-destructive' : 'border-border',
+            ]"
           />
+          <p v-if="errors.full_name" class="mt-1 text-xs text-destructive">{{ errors.full_name }}</p>
         </div>
-        <label class="flex items-center gap-2 text-sm">
+
+        <div>
+          <label class="text-sm font-medium">Telefon raqami</label>
+          <div
+            :class="[
+              'mt-1 flex h-11 w-full items-center overflow-hidden rounded-lg border bg-input focus-within:ring-2 focus-within:ring-primary/40',
+              errors.phone ? 'border-destructive' : 'border-border',
+            ]"
+          >
+            <span class="border-r border-border px-3 text-sm text-muted">{{ PHONE_PREFIX }}</span>
+            <input
+              :value="phoneDisplay"
+              inputmode="numeric"
+              maxlength="12"
+              placeholder="90 123 45 67"
+              class="h-full flex-1 bg-transparent px-3 text-sm outline-none"
+              @input="onPhoneInput"
+            />
+          </div>
+          <p v-if="errors.phone" class="mt-1 text-xs text-destructive">{{ errors.phone }}</p>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium">Login {{ editing ? "" : "*" }}</label>
           <input
-            v-model="editForm.is_active"
-            type="checkbox"
-            class="h-4 w-4 accent-primary"
+            v-model="form.login"
+            :disabled="!!editing"
+            placeholder="Login"
+            :class="[
+              'mt-1 h-11 w-full rounded-lg border bg-input px-3 text-sm focus:ring-2 focus:ring-primary/40 disabled:opacity-60',
+              errors.login ? 'border-destructive' : 'border-border',
+            ]"
           />
+          <p v-if="editing" class="mt-1 text-[11px] text-muted">
+            Login kirish uchun ishlatiladi — o'zgartirib bo'lmaydi.
+          </p>
+          <p v-if="errors.login" class="mt-1 text-xs text-destructive">{{ errors.login }}</p>
+        </div>
+
+        <div v-if="!editing">
+          <label class="text-sm font-medium">Parol *</label>
+          <input
+            v-model="form.password"
+            type="password"
+            placeholder="Parol"
+            :class="[
+              'mt-1 h-11 w-full rounded-lg border bg-input px-3 text-sm focus:ring-2 focus:ring-primary/40',
+              errors.password ? 'border-destructive' : 'border-border',
+            ]"
+          />
+          <p v-if="errors.password" class="mt-1 text-xs text-destructive">{{ errors.password }}</p>
+        </div>
+
+        <label class="flex items-center gap-2 text-sm">
+          <input v-model="form.is_active" type="checkbox" class="h-4 w-4 accent-primary" />
           Faol
         </label>
-        <div class="flex gap-2 pt-1">
+
+        <div class="flex items-center gap-3 pt-1">
           <button
             type="button"
-            class="h-11 flex-1 rounded-full border border-border text-sm font-medium transition-colors duration-150 hover:bg-secondary"
-            @click="editItem = null"
+            class="h-11 flex-1 rounded-lg border border-border text-sm font-medium transition-colors hover:bg-secondary"
+            @click="formOpen = false"
           >
             Bekor qilish
           </button>
           <button
             type="submit"
-            :disabled="savingEdit"
-            class="h-11 flex-1 rounded-full bg-primary text-sm font-semibold text-primary-foreground transition-all duration-150 hover:bg-primary/90 active:scale-95 disabled:opacity-60"
+            :disabled="saving"
+            class="h-11 flex-1 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-60"
           >
-            <span
-              v-if="savingEdit"
-              class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground align-middle"
-            ></span>
-            <span v-else>Yangilash</span>
+            {{ saving ? "Saqlanmoqda..." : editing ? "Saqlash" : "Qo'shish" }}
           </button>
         </div>
       </form>
     </AppModal>
 
-    <AppModal
-      :open="!!deleteItem"
-      title="O'chirishni tasdiqlang"
-      @close="deleteItem = null"
-    >
-      <p class="text-sm text-muted">
-        "<span class="font-medium text-gray-900">{{
-          deleteItem?.full_name
-        }}</span
-        >" kassirini o'chirmoqchimisiz?
-      </p>
-      <div class="mt-4 flex justify-end gap-2">
-        <button
-          class="rounded-full border border-border px-4 py-2 text-sm transition-colors duration-150 hover:bg-secondary"
-          @click="deleteItem = null"
+    <!-- ===== O'chirishni tasdiqlash ===== -->
+    <AppModal :open="!!deleteTarget" title="" @close="deleteTarget = null">
+      <div v-if="deleteTarget" class="text-center">
+        <div
+          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-2xl"
         >
-          Bekor qilish
-        </button>
-        <button
-          :disabled="deleting"
-          class="rounded-full bg-destructive px-4 py-2 text-sm text-white transition-all duration-150 hover:bg-destructive/90 active:scale-95 disabled:opacity-60"
-          @click="confirmDelete"
-        >
-          <span
-            v-if="deleting"
-            class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white align-middle"
-          ></span>
-          <span v-else>O'chirish</span>
-        </button>
+          🗑
+        </div>
+        <h2 class="text-lg font-bold">Rostan ham o'chirmoqchimisiz?</h2>
+        <p class="mt-1 text-xs text-muted">
+          Kassir o'chiriladi va u boshqa panelga kira olmaydi.<br />Bu amalni qaytarib bo'lmaydi.
+        </p>
+        <div class="mt-4 rounded-xl bg-secondary p-4 text-left">
+          <p class="font-bold">{{ deleteTarget.full_name }}</p>
+          <p class="text-xs text-muted">{{ fmtPhone(deleteTarget.phone) }}</p>
+          <p class="mt-1 text-xs text-muted">
+            {{ deleteTarget.scans_count ?? 0 }} marta skanerlagan
+          </p>
+        </div>
+        <div class="mt-5 flex items-center gap-3">
+          <button
+            class="h-11 flex-1 rounded-lg border border-border text-sm font-medium transition-colors hover:bg-secondary"
+            @click="deleteTarget = null"
+          >
+            Bekor qilish
+          </button>
+          <button
+            :disabled="deleting"
+            class="h-11 flex-1 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-60"
+            @click="confirmDelete"
+          >
+            {{ deleting ? "O'chirilmoqda..." : "O'chirish" }}
+          </button>
+        </div>
       </div>
     </AppModal>
   </DashboardLayout>
 </template>
 
 <style scoped>
-.page-enter {
-  animation: pageFadeIn 0.4s ease-out;
+.reveal {
+  animation: reveal-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0ms);
 }
 
-@keyframes pageFadeIn {
+@keyframes reveal-up {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(14px);
   }
 
   to {
@@ -399,84 +455,31 @@ function fmtDate(d) {
   }
 }
 
-.card-enter-active {
-  transition:
-    opacity 0.3s ease-out,
-    transform 0.3s ease-out;
-}
-
-.card-leave-active {
-  transition:
-    opacity 0.2s ease-in,
-    transform 0.2s ease-in;
-  position: absolute;
-}
-
-.card-enter-from {
-  opacity: 0;
-  transform: translateY(10px) scale(0.98);
-}
-
-.card-leave-to {
-  opacity: 0;
-  transform: scale(0.96);
-}
-
-.card-move {
-  transition: transform 0.3s ease;
-}
-
-.animate-pulse-dot {
+.skeleton {
   position: relative;
+  overflow: hidden;
+  background: #e5e7eb;
 }
 
-.animate-pulse-dot::after {
+.skeleton::after {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 9999px;
-  background: currentColor;
-  opacity: 0.6;
-  animation: dotPulse 1.8s ease-out infinite;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: shimmer 1.4s infinite;
 }
 
-@keyframes dotPulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-
+@keyframes shimmer {
   100% {
-    transform: scale(2.4);
-    opacity: 0;
-  }
-}
-
-.fade-in-up {
-  animation: fadeInUp 0.35s ease-out;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: translateX(100%);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-enter,
-  .fade-in-up,
-  .card-enter-active,
-  .card-leave-active,
-  .card-move,
-  .animate-pulse-dot::after {
+  .reveal,
+  .skeleton::after {
     animation: none !important;
-    transition: none !important;
   }
 }
 </style>

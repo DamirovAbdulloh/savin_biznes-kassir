@@ -1,10 +1,34 @@
 <script setup>
-import { RouterLink, useRoute } from "vue-router";
-import { computed, ref } from "vue";
+import { RouterLink, useRoute, useRouter } from "vue-router";
+import { computed, ref, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import AppModal from "@/components/AppModal.vue";
+import { notificationsApi } from "@/api";
 
 const route = useRoute();
+const router = useRouter();
 const authStore = useAuthStore();
+
+// --- O'qilmagan bildirishnomalar soni (sidebar'dagi belgi) ---
+const unreadCount = ref(0);
+
+async function loadUnread() {
+  try {
+    const list = await notificationsApi.list();
+    unreadCount.value = (Array.isArray(list) ? list : []).filter((n) => !n.is_read).length;
+  } catch {
+    // bildirishnomalarni olib bo'lmasa belgi shunchaki chiqmaydi
+  }
+}
+onMounted(loadUnread);
+
+// --- Tizimdan chiqishni tasdiqlash ---
+const logoutOpen = ref(false);
+function confirmLogout() {
+  logoutOpen.value = false;
+  authStore.logout();
+  router.push("/login");
+}
 
 const navGroups = [
   {
@@ -224,18 +248,26 @@ const ICONS = {
                     item.label
                   }}</span>
                 </Transition>
+
+                <!-- O'qilmagan bildirishnomalar soni -->
+                <span
+                  v-if="item.icon === 'bell' && unreadCount > 0"
+                  :class="[
+                    'ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-bold text-primary-foreground',
+                    collapsed ? 'absolute right-1 top-1 ml-0 h-4 min-w-4 px-1 text-[9px]' : '',
+                  ]"
+                >
+                  {{ unreadCount > 9 ? "9+" : unreadCount }}
+                </span>
               </RouterLink>
             </li>
           </ul>
         </div>
       </nav>
 
-      <!-- Chiqish -->
+      <!-- Chiqish — avval tasdiqlash oynasi ochiladi -->
       <button
-        @click="
-          authStore.logout();
-          $router.push('/login');
-        "
+        @click="logoutOpen = true"
         :title="collapsed ? 'Chiqish' : undefined"
         class="mx-3 mb-4 flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-white/60 transition-colors hover:bg-white/5 hover:text-white"
         :class="collapsed ? 'justify-center px-0' : ''"
@@ -349,6 +381,32 @@ const ICONS = {
         <slot />
       </div>
     </main>
+
+    <!-- Tizimdan chiqishni tasdiqlash -->
+    <AppModal :open="logoutOpen" title="" @close="logoutOpen = false">
+      <div class="text-center">
+        <div
+          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-2xl"
+        >
+          🚪
+        </div>
+        <h2 class="text-lg font-bold">Tizimdan chiqishni xohlaysizmi?</h2>
+        <div class="mt-5 flex items-center gap-3">
+          <button
+            class="h-11 flex-1 rounded-lg border border-border text-sm font-medium transition-colors hover:bg-secondary"
+            @click="logoutOpen = false"
+          >
+            Orqaga
+          </button>
+          <button
+            class="h-11 flex-1 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98]"
+            @click="confirmLogout"
+          >
+            Chiqish
+          </button>
+        </div>
+      </div>
+    </AppModal>
   </div>
 </template>
 
