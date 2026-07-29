@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from "vue";
 import KassirLayout from "@/layouts/KassirLayout.vue";
 import AppCard from "@/components/AppCard.vue";
+import DateRangePicker from "@/components/DateRangePicker.vue";
 import { cashierApi } from "@/api";
 import { useToastStore } from "@/stores/toast";
 
@@ -37,8 +38,17 @@ const filterOpen = ref(false);
 const page = ref(1);
 const pageSize = 10;
 
+// Sana oralig'i tanlagich (admin paneldagidek ikki oylik kalendar)
+const rangeOpen = ref(false);
+function fmtDateLabel(iso) {
+  if (!iso) return "kk.oo.yyyy";
+  const [y, m, d] = iso.split("-");
+  return `${d}.${m}.${y}`;
+}
+
 const dateFrom = ref("");
 const dateTo = ref("");
+const rangeLabel = computed(() => `${fmtDateLabel(dateFrom.value)} – ${fmtDateLabel(dateTo.value)}`);
 const percentFilter = ref(null);
 
 async function load() {
@@ -173,21 +183,44 @@ function prevPage() {
                   </button>
                 </div>
 
-                <label class="mb-1 block text-xs text-muted"
-                  >Sana oralig'i</label
-                >
-                <div class="mb-3 flex items-center gap-2">
-                  <input
-                    v-model="dateFrom"
-                    type="date"
-                    class="h-9 w-full rounded-lg border border-border bg-input px-2 text-xs transition-colors duration-150 focus:border-primary/50 focus:outline-none"
-                  />
-                  <span class="text-muted">—</span>
-                  <input
-                    v-model="dateTo"
-                    type="date"
-                    class="h-9 w-full rounded-lg border border-border bg-input px-2 text-xs transition-colors duration-150 focus:border-primary/50 focus:outline-none"
-                  />
+                <label class="mb-1 block text-xs text-muted">Sana oralig'i</label>
+                <div class="relative mb-3">
+                  <button
+                    type="button"
+                    class="flex h-9 w-full items-center justify-between rounded-lg border border-border bg-input px-3 text-xs transition-colors hover:bg-secondary"
+                    @click="rangeOpen = !rangeOpen"
+                  >
+                    <span :class="dateFrom || dateTo ? '' : 'text-muted'">{{ rangeLabel }}</span>
+                    <svg
+                      viewBox="0 0 24 24"
+                      class="h-3.5 w-3.5 text-muted"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                    >
+                      <rect x="3" y="4" width="18" height="18" rx="2" />
+                      <path d="M16 2v4M8 2v4M3 10h18" />
+                    </svg>
+                  </button>
+                  <div v-if="rangeOpen" class="absolute left-0 top-full z-40 mt-1">
+                    <DateRangePicker
+                      :start="dateFrom"
+                      :end="dateTo"
+                      @apply="
+                        (s, e) => {
+                          dateFrom = s;
+                          dateTo = e;
+                          rangeOpen = false;
+                        }
+                      "
+                      @cancel="rangeOpen = false"
+                      @clear="
+                        dateFrom = '';
+                        dateTo = '';
+                        rangeOpen = false;
+                      "
+                    />
+                  </div>
                 </div>
 
                 <label class="mb-1 block text-xs text-muted"
