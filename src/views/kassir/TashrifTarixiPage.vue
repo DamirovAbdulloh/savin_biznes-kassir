@@ -147,7 +147,7 @@ function prevPage() {
             />
           </div>
 
-          <div class="relative">
+          <div class="relative" v-click-outside="() => (filterOpen = false)">
             <button
               class="relative flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm font-medium transition-all duration-200 hover:border-primary/40 hover:bg-secondary active:scale-95"
               :class="filterOpen ? 'border-primary/50 bg-secondary' : ''"
@@ -184,7 +184,7 @@ function prevPage() {
                 </div>
 
                 <label class="mb-1 block text-xs text-muted">Sana oralig'i</label>
-                <div class="relative mb-3">
+                <div class="relative mb-3" v-click-outside="() => (rangeOpen = false)">
                   <button
                     type="button"
                     class="flex h-9 w-full items-center justify-between rounded-lg border border-border bg-input px-3 text-xs transition-colors hover:bg-secondary"
