@@ -192,12 +192,9 @@ export const cashierProfileApi = {
 //      standart ro'yxat ko'rsatiladi (UI ishlashda davom etsin deb).
 //   3) cashier_name bagi backend'da tuzatildi (Cashier.full_name'dan olinadi).
 
-const DEFAULT_SERVICES = [
-  { id: "soch-olish", name: "Soch olish", price: 50000 },
-  { id: "soqol-qirish", name: "Soqol qirish", price: 28000 },
-  { id: "soch-soqol", name: "Soch + Soqol", price: 72000 },
-  { id: "bola-soch", name: "Bola soch", price: 35000 },
-];
+// Eslatma: bu yerda "standart xizmatlar" ro'yxati bo'lardi (sartaroshxona
+// narxlari bilan) — u soxta ma'lumot edi va katalogi bo'sh biznesda ham
+// ko'rinardi. Endi faqat biznes egasi kiritgan haqiqiy xizmatlar chiqadi.
 
 // Backend Transaction maydonlarini frontend'da ishlatiladigan eski nomlarga
 // moslaymiz (applied_percent, purchase_amount, used_at) — shu bilan
@@ -289,24 +286,22 @@ export const cashierApi = {
     return rows.map(mapTransaction);
   },
 
-  // ✅ REAL backend: businesses/urls.py -> GET cashier/services/
+  // REAL backend: businesses/urls.py -> GET cashier/services/
   // Biznes egasi katalogni my-business/services/ orqali to'ldiradi.
-  // Katalog hali bo'sh bo'lsa (yoki xato bo'lsa) standart ro'yxat qaytadi —
-  // kassir ish jarayoni to'xtab qolmasligi uchun.
+  // Katalog bo'sh bo'lsa bo'sh ro'yxat qaytadi — soxta xizmatlar
+  // ko'rsatilmaydi (kassir sahifasi buni "xizmat qo'shilmagan" deb ko'rsatadi).
   async services() {
     try {
       const { data } = await client.get("cashier/services/");
       const rows = data.results ?? data;
-      if (Array.isArray(rows) && rows.length) {
-        return rows.map((s) => ({
-          id: s.id,
-          name: s.name,
-          price: Number(s.price),
-        }));
-      }
-      return DEFAULT_SERVICES;
+      if (!Array.isArray(rows)) return [];
+      return rows.map((s) => ({
+        id: s.id,
+        name: s.name,
+        price: Number(s.price),
+      }));
     } catch {
-      return DEFAULT_SERVICES;
+      return [];
     }
   },
 };

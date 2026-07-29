@@ -38,18 +38,14 @@ const initials = computed(() =>
 async function load() {
   loading.value = true;
   try {
-    const user = await meApi.get();
-    profile.username = user.username || "";
-    profile.phone_number = user.phone_number || "";
-    // ⚠️ MOCK — backend "biznes nomi" va "kassir kodi"ni qaytargach shu ikkitasini
-    // ham to'g'ridan-to'g'ri user obyektidan olamiz.
-    business.value =
-      user.business_name || authStore.business?.name || "Fresh Cut Barber";
-    cashierCode.value =
-      user.cashier_code ||
-      `#KSR-${String(user.id ?? 0)
-        .slice(-3)
-        .padStart(3, "0")}`;
+    // Barcha ma'lumot backend'dan — `cashier/me/` kassirning o'zi va
+    // biriktirilgan biznes haqidagi haqiqiy ma'lumotni qaytaradi.
+    const me = await cashierProfileApi.get();
+    profile.full_name = me.full_name || "";
+    profile.username = me.login || me.email || "";
+    profile.phone_number = me.phone || "";
+    business.value = me.business?.name || "—";
+    cashierCode.value = me.cashier_code || "—";
   } catch (e) {
     toast.error("Ma'lumotni yuklashda xatolik");
   } finally {

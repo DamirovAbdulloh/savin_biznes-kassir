@@ -542,11 +542,17 @@ startCamera();
                 validationError ? 'border-destructive' : 'border-transparent'
               "
             >
-              <option value="" disabled>Tanlang</option>
+              <option value="" disabled>
+                {{ services.length ? "Tanlang" : "Xizmat qo'shilmagan" }}
+              </option>
               <option v-for="s in services" :key="s.id" :value="s.id">
                 {{ s.name }}
               </option>
             </select>
+            <p v-if="!services.length" class="mt-1 text-xs text-muted">
+              Biznes egasi hali xizmat qo'shmagan — biznes panelidagi
+              "Xizmatlar" bo'limidan qo'shilishi kerak.
+            </p>
           </div>
 
           <div class="mt-3 space-y-1.5">
