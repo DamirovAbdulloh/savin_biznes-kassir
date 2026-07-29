@@ -7,6 +7,9 @@ import WizardStepper from "@/components/kassir/WizardStepper.vue";
 import NumericKeypad from "@/components/kassir/NumericKeypad.vue";
 import { cashierApi } from "@/api";
 import { useToastStore } from "@/stores/toast";
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
 
 const router = useRouter();
 const toast = useToastStore();
@@ -161,6 +164,35 @@ async function confirmTransaction() {
   } finally {
     submitting.value = false;
   }
+}
+
+// ---------------- Chek ma'lumotlari ----------------
+// Chekda biznes va kassir nomi ko'rinishi kerak (dizayndagidek)
+const businessName = computed(
+  () => authStore.business?.name || authStore.user?.business_name || "Savin",
+);
+const businessAddress = computed(
+  () => authStore.business?.address || authStore.business?.full_address || "",
+);
+const cashierName = computed(
+  () =>
+    authStore.user?.full_name ||
+    [authStore.user?.first_name, authStore.user?.last_name].filter(Boolean).join(" ") ||
+    authStore.user?.email ||
+    "—",
+);
+
+/** Chekni chop etish — faqat chek qismi bosiladi (boshqa hamma narsa yashiriladi) */
+function printReceipt() {
+  document.body.classList.add("printing-receipt");
+  const cleanup = () => {
+    document.body.classList.remove("printing-receipt");
+    window.removeEventListener("afterprint", cleanup);
+  };
+  window.addEventListener("afterprint", cleanup);
+  window.print();
+  // Ba'zi brauzerlarda afterprint ishlamaydi — zaxira sifatida
+  setTimeout(cleanup, 1500);
 }
 
 // ---------------- Navigatsiya ----------------
@@ -615,9 +647,12 @@ startCamera();
           </div>
         </AppCard>
 
-        <AppCard class="p-6 text-sm">
+        <AppCard id="savin-chek" class="p-6 text-sm">
           <p class="text-center font-semibold">Savin</p>
-          <p class="text-center text-xs text-muted">Chek</p>
+          <p class="text-center text-xs text-muted">{{ businessName }}</p>
+          <p v-if="businessAddress" class="text-center text-xs text-muted">
+            {{ businessAddress }}
+          </p>
           <div
             class="mt-4 space-y-1.5 border-t border-dashed border-border pt-4"
           >
@@ -633,6 +668,10 @@ startCamera();
                   minute: "2-digit",
                 })
               }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-muted">Kassir</span
+              ><span>{{ cashierName }}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-muted">Mijoz</span
@@ -653,10 +692,12 @@ startCamera();
             </div>
           </div>
           <div
-            class="mt-3 flex justify-between border-t border-dashed border-border pt-3 text-base font-bold"
+            class="mt-3 flex items-center justify-between border-t border-dashed border-border pt-3 text-base font-bold"
           >
-            <span>Jami</span><span>{{ fmt(result.final_amount) }} so'm</span>
+            <span>Jami</span
+            ><span class="text-success">{{ fmt(result.final_amount) }} so'm</span>
           </div>
+          <p class="mt-1 text-right text-xs text-muted">To'lov: naqd</p>
           <div class="mt-4 flex justify-center">
             <img
               :src="`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=savin-receipt-${encodeURIComponent(result.id || Date.now())}`"
@@ -667,6 +708,12 @@ startCamera();
           <p class="mt-2 text-center text-xs text-muted">
             Savin orqali<br />Rahmat! Qaytib keling
           </p>
+          <button
+            class="no-print mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98]"
+            @click="printReceipt"
+          >
+            🖨 Chekni chiqarish
+          </button>
         </AppCard>
       </div>
     </div>
@@ -681,5 +728,33 @@ startCamera();
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+</style>
+
+<!-- Chop etish uslubi global bo'lishi kerak (scoped emas): chek chiqarilganda
+     sahifadagi qolgan hamma narsa yashiriladi. -->
+<style>
+@media print {
+  body.printing-receipt * {
+    visibility: hidden;
+  }
+
+  body.printing-receipt #savin-chek,
+  body.printing-receipt #savin-chek * {
+    visibility: visible;
+  }
+
+  body.printing-receipt #savin-chek {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    border: none;
+    box-shadow: none;
+  }
+
+  body.printing-receipt .no-print {
+    display: none !important;
+  }
 }
 </style>

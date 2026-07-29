@@ -161,6 +161,19 @@ export const meApi = {
   },
 };
 
+// Kassirning o'z profili — ism/telefon/parolni o'zi o'zgartira oladi.
+// Login, biznes va kassir ID tizim tomonidan biriktiriladi (o'zgarmaydi).
+export const cashierProfileApi = {
+  async get() {
+    const { data } = await client.get("cashier/me/");
+    return data;
+  },
+  async update(payload) {
+    const { data } = await client.patch("cashier/me/", payload);
+    return data;
+  },
+};
+
 // ==================== KASSIR PANELI ====================
 // 2026-07-14 YANGILANDI: backend sherik "transactions" ilovasini ulab qo'ydi
 // (config/urls.py -> transactions.urls, prefiks: api/v1/transactions/).

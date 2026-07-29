@@ -6,7 +6,7 @@ import AppCard from "@/components/AppCard.vue";
 import AppModal from "@/components/AppModal.vue";
 import { useToastStore } from "@/stores/toast";
 import { useAuthStore } from "@/stores/auth";
-import { meApi } from "@/api";
+import { meApi, cashierProfileApi } from "@/api";
 
 const toast = useToastStore();
 const router = useRouter();
@@ -58,40 +58,71 @@ async function load() {
 }
 onMounted(load);
 
-// ---- Parol maydoni ----
-// Xavfsizlik sababli backend parolni hech qachon ochiq matnda qaytarmaydi
-// (u faqat hash holida saqlanadi). Shu sabab "ko'z" tugmasi haqiqiy parolni
-// ochmaydi — buning o'rniga xavfsizlik tushuntirilishi va (agar kerak bo'lsa)
-// parolni yangilash imkoni beriladi.
-function togglePassword() {
-  toast.info(
-    "Xavfsizlik uchun joriy parol ko'rsatilmaydi. Almashtirish uchun biznes egangizga murojaat qiling.",
-  );
+// ---- Profilni tahrirlash ----
+// Kassir o'z ismi, telefoni va parolini o'zgartira oladi. Login, biznes va
+// kassir ID tizim tomonidan biriktiriladi — ular o'zgarmaydi.
+const editing = ref(false);
+const saving = ref(false);
+const showNewPassword = ref(false);
+const draft = reactive({ full_name: "", phone_digits: "", password: "" });
+const editErrors = reactive({});
+
+const PHONE_PREFIX = "+998";
+function formatPhone(digits) {
+  const d = (digits || "").slice(0, 9);
+  return [d.slice(0, 2), d.slice(2, 5), d.slice(5, 7), d.slice(7, 9)].filter(Boolean).join(" ");
+}
+const draftPhoneDisplay = computed(() => formatPhone(draft.phone_digits));
+function onDraftPhoneInput(e) {
+  let d = e.target.value.replace(/\D/g, "");
+  if (d.length > 9 && d.startsWith("998")) d = d.slice(3);
+  draft.phone_digits = d.slice(0, 9);
+  e.target.value = formatPhone(draft.phone_digits);
 }
 
-// ---- Telefon raqamini tahrirlash ----
-const editingPhone = ref(false);
-const savingPhone = ref(false);
-const phoneDraft = ref("");
+function startEdit() {
+  draft.full_name = profile.full_name || "";
+  draft.phone_digits = (profile.phone_number || "").replace(/\D/g, "").slice(-9);
+  draft.password = "";
+  Object.keys(editErrors).forEach((k) => delete editErrors[k]);
+  showNewPassword.value = false;
+  editing.value = true;
+}
+function cancelEdit() {
+  editing.value = false;
+}
 
-function startEditPhone() {
-  phoneDraft.value = profile.phone_number;
-  editingPhone.value = true;
-}
-function cancelEditPhone() {
-  editingPhone.value = false;
-}
-async function savePhone() {
-  savingPhone.value = true;
+async function saveProfile() {
+  Object.keys(editErrors).forEach((k) => delete editErrors[k]);
+  if (!draft.full_name.trim()) editErrors.full_name = "Ismni kiriting.";
+  if (draft.phone_digits && draft.phone_digits.length !== 9)
+    editErrors.phone = "Telefon raqamini to'liq kiriting (9 ta raqam).";
+  if (draft.password && draft.password.length < 6)
+    editErrors.password = "Parol kamida 6 ta belgidan iborat bo'lsin.";
+  if (Object.keys(editErrors).length) return;
+
+  saving.value = true;
   try {
-    await meApi.update({ phone_number: phoneDraft.value });
-    profile.phone_number = phoneDraft.value;
-    editingPhone.value = false;
-    toast.success("Telefon raqami yangilandi");
+    const payload = {
+      full_name: draft.full_name.trim(),
+      phone: draft.phone_digits ? `${PHONE_PREFIX}${draft.phone_digits}` : "",
+    };
+    if (draft.password) payload.password = draft.password;
+
+    const data = await cashierProfileApi.update(payload);
+    profile.full_name = data.full_name;
+    profile.phone_number = data.phone || "";
+    editing.value = false;
+    toast.success(
+      draft.password ? "Ma'lumotlar va parol yangilandi" : "Ma'lumotlar yangilandi",
+    );
   } catch (e) {
-    toast.error("Saqlashda xatolik yuz berdi");
+    const d = e.response?.data || {};
+    if (d.full_name) editErrors.full_name = [].concat(d.full_name)[0];
+    else if (d.password) editErrors.password = [].concat(d.password)[0];
+    else toast.error("Saqlashda xatolik yuz berdi");
   } finally {
-    savingPhone.value = false;
+    saving.value = false;
   }
 }
 
@@ -153,41 +184,89 @@ function confirmLogout() {
           </div>
         </div>
 
-        <h3 class="mb-3 text-sm font-semibold">Ma'lumotlar</h3>
+        <div class="mb-3 flex items-center justify-between">
+          <h3 class="text-sm font-semibold">Ma'lumotlar</h3>
+          <button
+            v-if="!editing"
+            type="button"
+            class="flex h-9 items-center gap-1.5 rounded-lg border border-border px-3 text-xs font-medium transition-colors hover:bg-secondary"
+            :disabled="loading"
+            @click="startEdit"
+          >
+            ✎ Tahrirlash
+          </button>
+        </div>
 
         <div class="space-y-4">
+          <!-- Ism (tahrirlanadi) -->
+          <div>
+            <label class="mb-1 block text-xs font-medium text-muted">Ism Familiya</label>
+            <input
+              v-if="editing"
+              v-model="draft.full_name"
+              type="text"
+              :class="[
+                'h-11 w-full rounded-lg border bg-input px-3 text-sm outline-none transition-all focus:ring-4 focus:ring-primary/10',
+                editErrors.full_name ? 'border-destructive' : 'border-transparent focus:border-primary/50',
+              ]"
+            />
+            <input
+              v-else
+              :value="profile.full_name || '—'"
+              type="text"
+              disabled
+              class="h-11 w-full cursor-not-allowed rounded-lg border border-transparent bg-input px-3 text-sm text-muted outline-none"
+            />
+            <p v-if="editErrors.full_name" class="mt-1 text-xs text-destructive">
+              {{ editErrors.full_name }}
+            </p>
+          </div>
+
           <div class="grid gap-4 sm:grid-cols-2">
             <div>
-              <label class="mb-1 block text-xs font-medium text-muted"
-                >Login</label
-              >
+              <label class="mb-1 block text-xs font-medium text-muted">Login</label>
               <input
                 :value="profile.username"
                 type="text"
                 disabled
                 class="h-11 w-full cursor-not-allowed rounded-lg border border-transparent bg-input px-3 text-sm text-muted outline-none"
               />
+              <p class="mt-1 text-[11px] text-muted">Login kirish uchun — o'zgarmaydi.</p>
             </div>
             <div>
-              <label class="mb-1 block text-xs font-medium text-muted"
-                >Parol</label
-              >
+              <label class="mb-1 block text-xs font-medium text-muted">
+                {{ editing ? "Yangi parol" : "Parol" }}
+              </label>
               <div class="relative">
                 <input
+                  v-if="editing"
+                  v-model="draft.password"
+                  :type="showNewPassword ? 'text' : 'password'"
+                  placeholder="O'zgartirmasangiz bo'sh qoldiring"
+                  :class="[
+                    'h-11 w-full rounded-lg border bg-input px-3 pr-10 text-sm outline-none transition-all focus:ring-4 focus:ring-primary/10',
+                    editErrors.password ? 'border-destructive' : 'border-transparent focus:border-primary/50',
+                  ]"
+                />
+                <input
+                  v-else
                   value="••••••••••••"
                   type="text"
                   disabled
                   class="h-11 w-full cursor-not-allowed rounded-lg border border-transparent bg-input px-3 pr-10 text-sm text-muted outline-none"
                 />
                 <button
+                  v-if="editing"
                   type="button"
-                  @click="togglePassword"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-muted transition-colors duration-150 hover:text-gray-700"
-                  title="Parol xavfsizlik uchun ko'rsatilmaydi"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-muted transition-colors hover:text-gray-700"
+                  @click="showNewPassword = !showNewPassword"
                 >
-                  👁
+                  {{ showNewPassword ? "🙈" : "👁" }}
                 </button>
               </div>
+              <p v-if="editErrors.password" class="mt-1 text-xs text-destructive">
+                {{ editErrors.password }}
+              </p>
             </div>
           </div>
 
@@ -216,64 +295,54 @@ function confirmLogout() {
           </div>
 
           <div>
-            <label class="mb-1 block text-xs font-medium text-muted"
-              >Telefon raqami</label
+            <label class="mb-1 block text-xs font-medium text-muted">Telefon raqami</label>
+            <div
+              v-if="editing"
+              :class="[
+                'flex h-11 w-full items-center overflow-hidden rounded-lg border bg-input focus-within:ring-4 focus-within:ring-primary/10',
+                editErrors.phone ? 'border-destructive' : 'border-transparent focus-within:border-primary/50',
+              ]"
             >
-
-            <div v-if="!editingPhone" class="group flex items-center gap-2">
+              <span class="border-r border-border px-3 text-sm text-muted">{{ PHONE_PREFIX }}</span>
               <input
-                :value="profile.phone_number || '—'"
-                type="text"
-                disabled
-                class="h-11 w-full cursor-not-allowed rounded-lg border border-transparent bg-input px-3 text-sm text-muted outline-none"
+                :value="draftPhoneDisplay"
+                inputmode="numeric"
+                maxlength="12"
+                placeholder="90 123 45 67"
+                class="h-full flex-1 bg-transparent px-3 text-sm outline-none"
+                @input="onDraftPhoneInput"
               />
-              <button
-                type="button"
-                @click="startEditPhone"
-                class="flex h-11 shrink-0 items-center gap-1 rounded-lg border border-border px-3 text-xs font-medium text-green-500 opacity-0 transition-all duration-150 hover:bg-secondary group-hover:opacity-100"
-                :disabled="loading"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="1.3em"
-                  height="1.3em"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M0 0h24v24H0z" fill="none" />
-                  <path
-                    fill="currentColor"
-                    d="M5 19h1.425L16.2 9.225L14.775 7.8L5 17.575zm-2 2v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM19 6.4L17.6 5zm-3.525 2.125l-.7-.725L16.2 9.225z"
-                  />
-                </svg>
-                Tahrirlash
-              </button>
             </div>
+            <input
+              v-else
+              :value="profile.phone_number || '—'"
+              type="text"
+              disabled
+              class="h-11 w-full cursor-not-allowed rounded-lg border border-transparent bg-input px-3 text-sm text-muted outline-none"
+            />
+            <p v-if="editErrors.phone" class="mt-1 text-xs text-destructive">
+              {{ editErrors.phone }}
+            </p>
+          </div>
 
-            <div v-else class="flex items-center gap-2">
-              <input
-                v-model="phoneDraft"
-                type="text"
-                placeholder="+998 90 123 45 67"
-                autofocus
-                class="h-11 w-full rounded-lg border border-transparent bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
-              />
-              <button
-                type="button"
-                @click="savePhone"
-                :disabled="savingPhone"
-                class="h-11 shrink-0 rounded-lg bg-primary px-4 text-xs font-semibold text-primary-foreground shadow-sm transition-all duration-150 hover:bg-primary/90 active:scale-95 disabled:opacity-60"
-              >
-                {{ savingPhone ? "..." : "Saqlash" }}
-              </button>
-              <button
-                type="button"
-                @click="cancelEditPhone"
-                :disabled="savingPhone"
-                class="h-11 shrink-0 rounded-lg border border-border px-3 text-xs font-medium transition-colors duration-150 hover:bg-secondary"
-              >
-                Bekor
-              </button>
-            </div>
+          <!-- Saqlash / bekor qilish -->
+          <div v-if="editing" class="flex items-center gap-3 pt-1">
+            <button
+              type="button"
+              :disabled="saving"
+              class="h-11 flex-1 rounded-lg border border-border text-sm font-medium transition-colors hover:bg-secondary disabled:opacity-60"
+              @click="cancelEdit"
+            >
+              Bekor qilish
+            </button>
+            <button
+              type="button"
+              :disabled="saving"
+              class="h-11 flex-1 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-60"
+              @click="saveProfile"
+            >
+              {{ saving ? "Saqlanmoqda..." : "Saqlash" }}
+            </button>
           </div>
         </div>
       </AppCard>

@@ -1,9 +1,20 @@
 <script setup>
-import { RouterLink, useRoute } from "vue-router";
+import { RouterLink, useRoute, useRouter } from "vue-router";
+import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import AppModal from "@/components/AppModal.vue";
 
 const route = useRoute();
+const router = useRouter();
 const authStore = useAuthStore();
+
+// Chiqishdan oldin tasdiqlash oynasi
+const logoutOpen = ref(false);
+function confirmLogout() {
+  logoutOpen.value = false;
+  authStore.logout();
+  router.push("/login");
+}
 
 const navItems = [
   { to: "/kassir/dashboard", label: "Dashboard", icon: "grid" },
@@ -41,7 +52,7 @@ const ICONS = {
         </RouterLink>
       </nav>
 
-      <button @click="authStore.logout(); $router.push('/login')"
+      <button @click="logoutOpen = true"
         class="mx-3 mb-4 flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-white/60 transition-colors hover:bg-white/5 hover:text-white">
         <svg viewBox="0 0 24 24" class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8"
           stroke-linecap="round" stroke-linejoin="round" v-html="ICONS.logout"></svg>
@@ -72,5 +83,31 @@ const ICONS = {
         <slot />
       </div>
     </main>
+
+    <!-- Tizimdan chiqishni tasdiqlash -->
+    <AppModal :open="logoutOpen" title="" @close="logoutOpen = false">
+      <div class="text-center">
+        <div
+          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-2xl"
+        >
+          🚪
+        </div>
+        <h2 class="text-lg font-bold">Tizimdan chiqishni xohlaysizmi?</h2>
+        <div class="mt-5 flex items-center gap-3">
+          <button
+            class="h-11 flex-1 rounded-lg border border-border text-sm font-medium transition-colors hover:bg-secondary"
+            @click="logoutOpen = false"
+          >
+            Orqaga
+          </button>
+          <button
+            class="h-11 flex-1 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98]"
+            @click="confirmLogout"
+          >
+            Chiqish
+          </button>
+        </div>
+      </div>
+    </AppModal>
   </div>
 </template>
