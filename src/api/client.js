@@ -59,11 +59,21 @@ client.interceptors.response.use(
         // Backend'dagi haqiqiy yo'l: users/urls.py -> "auth/token/refresh/"
         refreshing =
           refreshing ||
-          axios.post(`${API_BASE}auth/token/refresh/`, { refresh }).then((res) => {
-            setTokens({ access: res.data.access });
-            refreshing = null;
-            return res.data.access;
-          });
+          axios
+            .post(`${API_BASE}auth/token/refresh/`, { refresh })
+            .then((res) => {
+              // Backendda ROTATE_REFRESH_TOKENS yoqilgan — server yangi refresh
+              // token ham qaytaradi. Uni saqlamasak, eski token muddati tugagach
+              // faol foydalanuvchi ham tizimdan chiqib ketardi.
+              setTokens({ access: res.data.access, refresh: res.data.refresh });
+              return res.data.access;
+            })
+            .finally(() => {
+              // Xato bo'lganda ham tozalanadi — aks holda muvaffaqiyatsiz
+              // urinishdan keyin `refreshing` abadiy rad etilgan promise bo'lib
+              // qolib, keyingi barcha qayta urinishlar darrov yiqilardi.
+              refreshing = null;
+            });
         const newAccess = await refreshing;
         original.headers.Authorization = `Bearer ${newAccess}`;
         return client(original);

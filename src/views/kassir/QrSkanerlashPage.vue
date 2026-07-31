@@ -80,14 +80,23 @@ function stopCamera() {
 }
 
 const loadingCustomer = ref(false);
+// Bir xil QR ketma-ket o'qilganda xabar takrorlanib ketmasligi uchun
+let lastFailedCode = null;
+
 async function onQrDetected(code) {
   stopCamera();
   loadingCustomer.value = true;
   try {
     customer.value = await cashierApi.verifyQr(code);
+    lastFailedCode = null;
     step.value = 2;
-  } catch {
-    toast.error("QR kod tekshirilmadi. Qayta urinib ko'ring.");
+  } catch (e) {
+    // Backend aniq sababni yuboradi (muddati tugagan, bloklangan, topilmadi)
+    const detail = e.response?.data?.detail;
+    if (code !== lastFailedCode) {
+      toast.error(detail || "QR kod tekshirilmadi. Qayta urinib ko'ring.");
+      lastFailedCode = code;
+    }
     startCamera();
   } finally {
     loadingCustomer.value = false;
