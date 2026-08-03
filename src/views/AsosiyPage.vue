@@ -1,10 +1,16 @@
 <template>
   <DashboardLayout>
     <div class="space-y-4">
-      <AppCard class="p-5 reveal" style="--d: 0ms">
+      <!-- Sarlavha dizayndagidek teppaga yopishib turadi (main paddingdan
+           chiqib, sahifa yuqorisiga tegib turadigan oq panel — ajralib turgan
+           karta emas). Statistika sahifasi bilan bir xil. -->
+      <div
+        class="reveal -mx-4 -mt-4 mb-1 border-b border-border bg-card px-5 py-4 md:-mx-6 md:-mt-6"
+        style="--d: 0ms"
+      >
         <h1 class="text-xl font-bold">Asosiy</h1>
         <p class="text-sm text-muted capitalize">Bugun, {{ today }}</p>
-      </AppCard>
+      </div>
 
       <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
         <AppCard
