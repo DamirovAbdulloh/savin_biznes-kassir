@@ -81,6 +81,11 @@ const mobileItems = [
   { to: "/profil", label: "Profil", icon: "card" },
 ];
 
+// --- Logotip belgisi (rasmga bog'liq emas, inline SVG) ---
+// Dizayndagi kabi yashil yumaloq kvadrat ichida savin "aylanma" belgisi.
+// Ilgari `images/Vector.png` ishlatilardi — endi vektor, har o'lchamda tiniq.
+const LOGO_SVG = `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-full w-full"><rect width="64" height="64" rx="16" fill="#7ED957"/><path transform="translate(12 12) scale(0.625)" d="M32.0494 0C41.5095 8.4305e-06 49.8393 1.5731 55.7064 6.98065C61.6576 12.4659 64 20.8754 64 31.8672C64 38.5895 63.0506 44.4877 59.7844 48.6988C56.2695 53.2307 50.9828 54.7332 45.0504 54.7332C39.1149 54.7332 33.9502 53.2171 30.7554 48.4281C28.2288 44.6409 27.5084 39.5175 27.3885 33.8123L22.0315 38.1122L16.1697 30.8193L32.0436 18.0778L47.974 30.8135L42.1265 38.118L36.7537 33.8225C36.8868 39.0419 37.5692 41.7782 38.5438 43.2393C39.2492 44.2967 40.585 45.379 45.0504 45.379C49.5181 45.379 51.3662 44.2828 52.3858 42.9684C53.6543 41.3331 54.6394 38.137 54.6394 31.8674C54.6394 21.9161 52.4782 16.7307 49.3601 13.8566C46.1574 10.9049 40.8522 9.35431 32.0494 9.35431C23.6233 9.35431 18.1798 11.4296 14.8123 14.7678C11.4518 18.0991 9.36049 23.48 9.36047 31.8336C9.36047 40.1793 11.4639 45.6678 14.8629 49.0933C18.2547 52.5117 23.7013 54.646 32.0494 54.646V64C22.1963 64 13.9583 61.4673 8.21589 55.6798C2.48058 49.8995 -3.72892e-06 41.643 0 31.8336C1.31865e-05 22.0322 2.46181 13.8348 8.22007 8.12667C13.9713 2.42546 22.2126 -3.16066e-06 32.0494 0Z" fill="#052400"/></svg>`;
+
 // --- SVG ikonalar (lucide uslubida, stroke asosida) ---
 const ICONS = {
   home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>',
@@ -113,10 +118,9 @@ const ICONS = {
       >
         <div class="flex items-center gap-2 overflow-hidden">
           <div
-            class="sidebar-pop flex items-center justify-center text-primary-foreground font-bold"
-          >
-            <img src="../images/Vector.png" alt="S" class="h-6 w-6" />
-          </div>
+            class="sidebar-pop flex h-8 w-8 shrink-0 items-center justify-center"
+            v-html="LOGO_SVG"
+          ></div>
           <Transition name="label-fade">
             <span
               v-if="!collapsed"
@@ -293,7 +297,7 @@ const ICONS = {
       class="fixed inset-x-0 top-0 z-30 flex items-center justify-between gap-2 bg-sidebar px-3 py-2.5 text-white md:hidden"
     >
       <div class="flex items-center gap-1.5">
-        <img src="../images/Vector.png" alt="S" class="h-5 w-5 shrink-0" />
+        <span class="flex h-6 w-6 shrink-0" v-html="LOGO_SVG"></span>
         <span
           class="whitespace-nowrap text-lg font-semibold text-[rgba(137,234,92,1)]"
           >savin</span

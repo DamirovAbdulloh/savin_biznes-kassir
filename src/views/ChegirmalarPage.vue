@@ -11,7 +11,7 @@ const toast = useToastStore();
 // Dizaynda biznesning bir nechta chegirma turi bo'ladi (Standart, Premium,
 // VIP...). Har biri alohida karta: foiz, minimal xarid, faollik va necha
 // marta ishlatilgani.
-const CATEGORIES = ["Standart", "Premium", "Maxsus taklif", "VIP", "Tug'ilgan kun"];
+const CATEGORIES = ["Standart", "Premium", "Maxsus taklif", "VIP"];
 
 const items = ref([]);
 const loading = ref(true);
@@ -33,12 +33,20 @@ const formErrors = reactive({});
 const deleteTarget = ref(null);
 const deleting = ref(false);
 
-// Tanlangan kategoriya band bo'lsa ro'yxatdan chiqarib tashlaymiz
+// Tanlangan kategoriya band bo'lsa ro'yxatdan chiqarib tashlaymiz.
+// Tahrirlashda joriy kategoriya ro'yxatda QOLADI (lekin faqat bir marta —
+// ilgari u alohida <option> bilan ham qo'shilib, "Premium" ikki marta
+// ko'rinardi).
 const availableCategories = computed(() => {
-  const used = new Set(
-    items.value.filter((d) => d.id !== editing.value?.id).map((d) => d.category),
-  );
-  return CATEGORIES.filter((c) => !used.has(c));
+  const used = new Set(items.value.map((d) => d.category));
+  if (editing.value) used.delete(editing.value.category);
+  const list = CATEGORIES.filter((c) => !used.has(c));
+  // Eski ma'lumotdagi kategoriya (masalan endi olib tashlangan "Tug'ilgan
+  // kun") tahrirlashda baribir ko'rinib tursin, aks holda maydon bo'sh qoladi.
+  if (editing.value && editing.value.category && !list.includes(editing.value.category)) {
+    list.unshift(editing.value.category);
+  }
+  return list;
 });
 
 async function load() {
@@ -101,12 +109,14 @@ async function save() {
       min_purchase: Number(form.min_purchase) || 0,
       is_active: form.is_active,
     };
+    // MUHIM: chegirma qo'shish/tahrirlash endi to'g'ridan saqlanmaydi — admin
+    // tasdiqlashi kerak. Backend 202 + { pending: true } qaytaradi.
     if (editing.value) {
       await discountApi.update(editing.value.id, payload);
-      toast.success(`"${payload.category}" chegirmasi yangilandi`);
+      toast.success("Tahrirlash so'rovi adminga yuborildi — tasdiqlanishini kuting.");
     } else {
       await discountApi.create(payload);
-      toast.success(`"${payload.category}" chegirmasi qo'shildi`);
+      toast.success("So'rov adminga yuborildi — tasdiqlangach chegirma qo'shiladi.");
     }
     formOpen.value = false;
     await load();
@@ -114,7 +124,8 @@ async function save() {
     const d = e.response?.data || {};
     if (d.category) formErrors.category = [].concat(d.category)[0];
     if (d.percent) formErrors.percent = [].concat(d.percent)[0];
-    if (!d.category && !d.percent) toast.error("Xatolik yuz berdi");
+    if (d.detail) toast.error(d.detail);
+    else if (!d.category && !d.percent) toast.error("Xatolik yuz berdi");
   } finally {
     saving.value = false;
   }
@@ -239,18 +250,22 @@ function fmtSom(v) {
 
             <div class="flex items-center gap-2">
               <button
-                class="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary transition-colors hover:bg-gray-200"
+                class="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary text-gray-700 transition-colors hover:bg-gray-200"
                 title="Tahrirlash"
                 @click="openEdit(d)"
               >
-                ✎
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                  <path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                </svg>
               </button>
               <button
                 class="flex h-9 w-9 items-center justify-center rounded-lg bg-red-50 text-destructive transition-colors hover:bg-red-100"
                 title="O'chirish"
                 @click="deleteTarget = d"
               >
-                🗑
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                  <path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" />
+                </svg>
               </button>
             </div>
           </div>
@@ -268,6 +283,12 @@ function fmtSom(v) {
         <p class="text-[11px] text-muted">
           * belgisi bilan belgilangan maydonlar to'ldirilishi shart
         </p>
+        <div class="flex items-start gap-2 rounded-lg bg-accent px-3 py-2 text-[11px] text-accent-foreground">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-3.5 w-3.5 shrink-0">
+            <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+          </svg>
+          <span>Chegirma to'g'ridan-to'g'ri qo'shilmaydi — avval adminга so'rov boradi, tasdiqlangach kuchga kiradi.</span>
+        </div>
 
         <div>
           <label class="text-sm font-medium">Kategoriya *</label>
@@ -279,8 +300,6 @@ function fmtSom(v) {
             ]"
           >
             <option value="">Tanlang</option>
-            <!-- Tahrirlashda joriy kategoriya ham ro'yxatda qolsin -->
-            <option v-if="editing" :value="editing.category">{{ editing.category }}</option>
             <option v-for="c in availableCategories" :key="c" :value="c">{{ c }}</option>
           </select>
           <p v-if="formErrors.category" class="mt-1 text-xs text-destructive">
@@ -351,7 +370,7 @@ function fmtSom(v) {
             :disabled="saving"
             class="h-11 flex-1 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-60"
           >
-            {{ saving ? "Saqlanmoqda..." : editing ? "Saqlash" : "Qo'shish" }}
+            {{ saving ? "Yuborilmoqda..." : "So'rov yuborish" }}
           </button>
         </div>
       </form>
@@ -361,9 +380,11 @@ function fmtSom(v) {
     <AppModal :open="!!deleteTarget" title="" @close="deleteTarget = null">
       <div v-if="deleteTarget" class="text-center">
         <div
-          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-2xl"
+          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-destructive"
         >
-          🗑
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-7 w-7">
+            <path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" />
+          </svg>
         </div>
         <h2 class="text-lg font-bold">Rostan ham o'chirmoqchimisiz?</h2>
         <p class="mt-1 text-xs text-muted">

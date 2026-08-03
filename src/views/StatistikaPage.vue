@@ -98,17 +98,19 @@ watch(range, load);
 <template>
   <DashboardLayout>
     <div class="space-y-4">
-      <AppCard
-        class="reveal flex flex-wrap items-center justify-between gap-3 p-5"
+      <!-- Sarlavha satri dizayndagidek teppaga yopishib turadi (main paddingdan
+           chiqib, sahifa yuqorisiga tegib turadigan oq panel). -->
+      <div
+        class="reveal -mx-4 -mt-4 mb-1 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card px-5 py-4 md:-mx-6 md:-mt-6"
         style="--d: 0ms"
       >
         <h1 class="text-xl font-bold">Statistika</h1>
 
         <div
-          class="relative flex gap-1 rounded-full bg-secondary p-1 text-sm font-medium"
+          class="relative flex gap-1 rounded-xl bg-secondary p-1 text-sm font-medium"
         >
           <span
-            class="absolute inset-y-1 rounded-full bg-[#f2662d] shadow-md transition-transform duration-300 ease-[cubic-bezier(.34,1.56,.64,1)]"
+            class="absolute inset-y-1 rounded-lg bg-primary shadow-md transition-transform duration-300 ease-[cubic-bezier(.34,1.56,.64,1)]"
             :style="{
               width: `calc((100% - 8px - ${(ranges.length - 1) * 4}px) / ${ranges.length})`,
               transform: `translateX(calc(${rangeIndex} * (100% + 4px)))`,
@@ -117,10 +119,10 @@ watch(range, load);
           <button
             v-for="r in ranges"
             :key="r.label"
-            class="relative z-10 rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-300"
+            class="relative z-10 rounded-lg px-4 py-1.5 text-sm font-medium transition-colors duration-300"
             :class="
               range.label === r.label
-                ? 'text-white'
+                ? 'text-primary-foreground'
                 : 'text-muted hover:text-gray-900'
             "
             @click="range = r"
@@ -128,7 +130,7 @@ watch(range, load);
             {{ r.label }}
           </button>
         </div>
-      </AppCard>
+      </div>
 
       <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
         <AppCard

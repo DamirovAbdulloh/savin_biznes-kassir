@@ -23,6 +23,8 @@ const profile = reactive({
   full_address: "",
   phone_number: "",
   email: "",
+  work_hours_from: "",
+  work_hours_to: "",
 });
 const categoryName = ref("");
 const cashiersCount = ref(0);
@@ -50,6 +52,8 @@ async function load() {
     profile.full_address = business.full_address || "";
     profile.phone_number = business.phone_number || "";
     profile.email = business.email || "";
+    profile.work_hours_from = business.work_hours_from || "";
+    profile.work_hours_to = business.work_hours_to || "";
     categoryName.value = business.category?.name || "—";
     cashiersCount.value = business.cashiers_count ?? 0;
     stats.customers = dash.total_customers ?? 0;
@@ -72,17 +76,24 @@ function fmt(n) {
 async function save() {
   saving.value = true;
   try {
-    await businessApi.update({
+    // MUHIM: profil to'g'ridan saqlanmaydi — admin tasdiqlashi kerak.
+    // Backend 202 + { pending: true } yoki (o'zgarish yo'q) 200 + { pending: false }.
+    const res = await businessApi.update({
       name: profile.name,
       description: profile.description,
       full_address: profile.full_address,
       phone_number: profile.phone_number,
       email: profile.email,
+      work_hours_from: profile.work_hours_from,
+      work_hours_to: profile.work_hours_to,
     });
-    authStore.business = { ...authStore.business, name: profile.name };
-    toast.success("O'zgarishlar saqlandi");
+    if (res && res.pending === false) {
+      toast.info("Hech qanday o'zgarish kiritilmadi.");
+    } else {
+      toast.success("So'rov adminga yuborildi — tasdiqlangach o'zgaradi.");
+    }
   } catch (e) {
-    toast.error("Saqlashda xatolik yuz berdi");
+    toast.error("So'rov yuborishda xatolik yuz berdi");
   } finally {
     saving.value = false;
   }
@@ -112,12 +123,12 @@ function confirmLogout() {
           :disabled="saving || loading"
           @click="save"
         >
-          <span v-if="!saving">Saqlash</span>
+          <span v-if="!saving">So'rov yuborish</span>
           <span v-else class="inline-flex items-center gap-2">
             <span
               class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white"
             ></span>
-            Saqlanmoqda…
+            Yuborilmoqda…
           </span>
         </button>
       </AppCard>
@@ -214,6 +225,30 @@ function confirmLogout() {
                 />
               </div>
             </div>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label class="mb-1 block text-xs font-medium text-muted"
+                  >Ochilish vaqti</label
+                >
+                <input
+                  v-model="profile.work_hours_from"
+                  type="time"
+                  :disabled="loading"
+                  class="h-11 w-full rounded-lg border border-transparent bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
+                />
+              </div>
+              <div>
+                <label class="mb-1 block text-xs font-medium text-muted"
+                  >Yopilish vaqti</label
+                >
+                <input
+                  v-model="profile.work_hours_to"
+                  type="time"
+                  :disabled="loading"
+                  class="h-11 w-full rounded-lg border border-transparent bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
+                />
+              </div>
+            </div>
             <div>
               <label class="mb-1 block text-xs font-medium text-muted"
                 >Tavsif</label
@@ -224,6 +259,12 @@ function confirmLogout() {
                 :disabled="loading"
                 class="w-full resize-none rounded-lg border border-transparent bg-input px-3 py-2.5 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
               ></textarea>
+            </div>
+            <div class="flex items-start gap-2 rounded-lg bg-accent px-3 py-2 text-[11px] text-accent-foreground">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-3.5 w-3.5 shrink-0">
+                <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+              </svg>
+              <span>Ma'lumotlar to'g'ridan-to'g'ri o'zgarmaydi — "So'rov yuborish" bosilganda adminга boradi, tasdiqlangach kuchga kiradi.</span>
             </div>
           </div>
         </AppCard>

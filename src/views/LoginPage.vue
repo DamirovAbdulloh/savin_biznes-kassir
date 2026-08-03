@@ -50,10 +50,13 @@ function copyPhone() {
     <AnimatedBackground />
 
     <div class="relative z-10 w-full max-w-md rounded-3xl bg-white/90 p-8 shadow-2xl backdrop-blur-sm">
-      <!-- Logo -->
-      <div class="mb-6 flex h-24 w-24 items-center justify-center rounded-2xl text-white"
-        style="background: linear-gradient(135deg, #6fd94a, #3fae2a);">
-        <img src="../images/Vector.svg?url" alt="Vector" />
+      <!-- Logo — dizayndagidek yorqin yashil yumaloq kvadrat + qora belgi -->
+      <div class="mb-6 flex h-24 w-24 items-center justify-center rounded-2xl" style="background: #7ed957;">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-12 w-12">
+          <path
+            d="M32.0494 0C41.5095 8.4305e-06 49.8393 1.5731 55.7064 6.98065C61.6576 12.4659 64 20.8754 64 31.8672C64 38.5895 63.0506 44.4877 59.7844 48.6988C56.2695 53.2307 50.9828 54.7332 45.0504 54.7332C39.1149 54.7332 33.9502 53.2171 30.7554 48.4281C28.2288 44.6409 27.5084 39.5175 27.3885 33.8123L22.0315 38.1122L16.1697 30.8193L32.0436 18.0778L47.974 30.8135L42.1265 38.118L36.7537 33.8225C36.8868 39.0419 37.5692 41.7782 38.5438 43.2393C39.2492 44.2967 40.585 45.379 45.0504 45.379C49.5181 45.379 51.3662 44.2828 52.3858 42.9684C53.6543 41.3331 54.6394 38.137 54.6394 31.8674C54.6394 21.9161 52.4782 16.7307 49.3601 13.8566C46.1574 10.9049 40.8522 9.35431 32.0494 9.35431C23.6233 9.35431 18.1798 11.4296 14.8123 14.7678C11.4518 18.0991 9.36049 23.48 9.36047 31.8336C9.36047 40.1793 11.4639 45.6678 14.8629 49.0933C18.2547 52.5117 23.7013 54.646 32.0494 54.646V64C22.1963 64 13.9583 61.4673 8.21589 55.6798C2.48058 49.8995 -3.72892e-06 41.643 0 31.8336C1.31865e-05 22.0322 2.46181 13.8348 8.22007 8.12667C13.9713 2.42546 22.2126 -3.16066e-06 32.0494 0Z"
+            fill="#052400" />
+        </svg>
       </div>
 
       <h1 class="text-3xl font-bold leading-tight text-gray-900">
@@ -117,8 +120,8 @@ function copyPhone() {
         </div>
 
         <button type="submit"
-          class="h-11 w-full rounded-full text-sm font-semibold text-white shadow-md transition hover:opacity-90 disabled:opacity-60"
-          style="background: linear-gradient(135deg, #6fd94a, #3fae2a);" :disabled="loading">
+          class="h-11 w-full rounded-xl text-sm font-semibold text-white shadow-md transition hover:opacity-90 disabled:opacity-60"
+          style="background: #6fd94a;" :disabled="loading">
           {{ loading ? "Yuklanmoqda..." : "Kirish" }}
         </button>
 

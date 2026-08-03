@@ -78,7 +78,8 @@ function openEdit(c) {
   Object.assign(form, {
     full_name: c.full_name,
     phone_digits: (c.phone || "").replace(/\D/g, "").slice(-9),
-    login: c.login || "",
+    // Faqat nom qismi ko'rsatiladi — "@savi.uz" qo'shimchasi maydon yonida
+    login: (c.login || "").split("@")[0],
     password: "",
     is_active: c.is_active,
   });
@@ -92,9 +93,11 @@ function validate() {
   if (form.phone_digits && form.phone_digits.length !== 9)
     errors.phone = "Telefon raqamini to'liq kiriting (9 ta raqam).";
   if (!editing.value) {
-    if (!form.login.trim()) errors.login = "Loginni kiriting.";
-    else if (!/^[A-Za-z0-9._-]{3,}$/.test(form.login.trim()))
-      errors.login = "Login kamida 3 ta belgi: harf, raqam va . _ -";
+    // Faqat nom qismi tekshiriladi — raqam/belgi majburiy emas, "@savin.uz"
+    // avtomatik qo'shiladi.
+    const local = form.login.trim().toLowerCase().split("@")[0].replace(/[^a-z0-9._-]/g, "");
+    if (!local) errors.login = "Loginni kiriting.";
+    else if (local.length < 2) errors.login = "Kamida 2 ta harf (faqat harf yetarli).";
     if (!form.password || form.password.length < 6)
       errors.password = "Parol kamida 6 ta belgidan iborat bo'lsin.";
   }
@@ -275,23 +278,34 @@ function fmtPhone(p) {
                 :title="revealed[c.id] ? 'Yashirish' : `Ko'rsatish`"
                 @click="revealed[c.id] = !revealed[c.id]"
               >
-                {{ revealed[c.id] ? "🙈" : "👁" }}
+                <svg v-if="revealed[c.id]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                  <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.6 21.6 0 0 1 5.06-6.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a21.6 21.6 0 0 1-2.94 3.94M14.12 14.12a3 3 0 1 1-4.24-4.24" /><line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+                <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" /><circle cx="12" cy="12" r="3" />
+                </svg>
               </button>
             </div>
           </div>
 
           <div class="mt-auto flex items-center gap-2 pt-4">
             <button
-              class="h-10 flex-1 rounded-lg border border-border text-sm font-medium transition-colors hover:bg-secondary"
+              class="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-lg border border-border text-sm font-medium transition-colors hover:bg-secondary"
               @click="openEdit(c)"
             >
-              ✎ Tahrirlash
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                <path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+              </svg>
+              Tahrirlash
             </button>
             <button
-              class="h-10 flex-1 rounded-lg bg-red-50 text-sm font-medium text-destructive transition-colors hover:bg-red-100"
+              class="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-lg bg-red-50 text-sm font-medium text-destructive transition-colors hover:bg-red-100"
               @click="deleteTarget = c"
             >
-              🗑 O'chirish
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                <path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" />
+              </svg>
+              O'chirish
             </button>
           </div>
         </AppCard>
@@ -345,17 +359,28 @@ function fmtPhone(p) {
 
         <div>
           <label class="text-sm font-medium">Login {{ editing ? "" : "*" }}</label>
-          <input
-            v-model="form.login"
-            :disabled="!!editing"
-            placeholder="Login"
+          <div
             :class="[
-              'mt-1 h-11 w-full rounded-lg border bg-input px-3 text-sm focus:ring-2 focus:ring-primary/40 disabled:opacity-60',
+              'mt-1 flex h-11 w-full items-center overflow-hidden rounded-lg border bg-input focus-within:ring-2 focus-within:ring-primary/40',
               errors.login ? 'border-destructive' : 'border-border',
+              editing ? 'opacity-60' : '',
             ]"
-          />
+          >
+            <input
+              v-model="form.login"
+              :disabled="!!editing"
+              placeholder="masalan: baxtiyor"
+              class="h-full flex-1 bg-transparent px-3 text-sm outline-none disabled:cursor-not-allowed"
+            />
+            <span class="border-l border-border px-3 text-sm text-muted">@savin.uz</span>
+          </div>
           <p v-if="editing" class="mt-1 text-[11px] text-muted">
             Login kirish uchun ishlatiladi — o'zgartirib bo'lmaydi.
+          </p>
+          <p v-else class="mt-1 text-[11px] text-muted">
+            Faqat nom yozing — raqam yoki belgi shart emas. Kassir
+            <span class="font-medium">{{ (form.login || "login").toLowerCase().split("@")[0] }}@savin.uz</span>
+            bilan kiradi.
           </p>
           <p v-if="errors.login" class="mt-1 text-xs text-destructive">{{ errors.login }}</p>
         </div>
@@ -402,9 +427,11 @@ function fmtPhone(p) {
     <AppModal :open="!!deleteTarget" title="" @close="deleteTarget = null">
       <div v-if="deleteTarget" class="text-center">
         <div
-          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-2xl"
+          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-destructive"
         >
-          🗑
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-7 w-7">
+            <path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" />
+          </svg>
         </div>
         <h2 class="text-lg font-bold">Rostan ham o'chirmoqchimisiz?</h2>
         <p class="mt-1 text-xs text-muted">
