@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, reactive, computed } from "vue";
+import { ref, onMounted, reactive, computed, watch } from "vue";
 import DashboardLayout from "@/layouts/DashboardLayout.vue";
 import AppCard from "@/components/AppCard.vue";
 import AppModal from "@/components/AppModal.vue";
@@ -28,6 +28,48 @@ const form = reactive({
   is_active: true,
 });
 const errors = reactive({});
+
+// ---- Login jonli tekshiruvi ----
+// Yozayotganda backendga so'rov: login band bo'lsa (boshqa biznesning
+// kassiri bilan bir xil) darhol ogohlantiramiz. "": bo'sh, "checking",
+// "free" (bo'sh), "taken" (band).
+const loginStatus = ref("");
+let loginCheckTimer = null;
+
+function loginLocal(val) {
+  return (val || "").trim().toLowerCase().split("@")[0].replace(/[^a-z0-9._-]/g, "");
+}
+
+watch(
+  () => form.login,
+  (val) => {
+    if (editing.value) {
+      loginStatus.value = "";
+      return;
+    }
+    delete errors.login;
+    loginStatus.value = "";
+    if (loginCheckTimer) clearTimeout(loginCheckTimer);
+    const local = loginLocal(val);
+    if (local.length < 2) return;
+    loginStatus.value = "checking";
+    loginCheckTimer = setTimeout(async () => {
+      try {
+        const res = await cashiersApi.checkLogin(local);
+        // Foydalanuvchi orada boshqacha yozgan bo'lsa, eski javobni tashlaymiz
+        if (loginLocal(form.login) !== local) return;
+        if (res.available) {
+          loginStatus.value = "free";
+        } else {
+          loginStatus.value = "taken";
+          errors.login = "Bunday login allaqachon mavjud. Boshqa login tanlang.";
+        }
+      } catch {
+        loginStatus.value = "";
+      }
+    }, 400);
+  },
+);
 
 // ---- O'chirish ----
 const deleteTarget = ref(null);
@@ -70,6 +112,7 @@ function openCreate() {
     is_active: true,
   });
   Object.keys(errors).forEach((k) => delete errors[k]);
+  loginStatus.value = "";
   formOpen.value = true;
 }
 
@@ -84,6 +127,7 @@ function openEdit(c) {
     is_active: c.is_active,
   });
   Object.keys(errors).forEach((k) => delete errors[k]);
+  loginStatus.value = "";
   formOpen.value = true;
 }
 
@@ -98,6 +142,8 @@ function validate() {
     const local = form.login.trim().toLowerCase().split("@")[0].replace(/[^a-z0-9._-]/g, "");
     if (!local) errors.login = "Loginni kiriting.";
     else if (local.length < 2) errors.login = "Kamida 2 ta harf (faqat harf yetarli).";
+    else if (loginStatus.value === "taken")
+      errors.login = "Bunday login allaqachon mavjud. Boshqa login tanlang.";
     if (!form.password || form.password.length < 6)
       errors.password = "Parol kamida 6 ta belgidan iborat bo'lsin.";
   }
@@ -381,6 +427,19 @@ function fmtPhone(p) {
             Faqat nom yozing — raqam yoki belgi shart emas. Kassir
             <span class="font-medium">{{ (form.login || "login").toLowerCase().split("@")[0] }}@savin.uz</span>
             bilan kiradi.
+          </p>
+          <!-- Jonli tekshiruv: band bo'lsa errors.login (qizil) chiqadi -->
+          <p v-if="!editing && loginStatus === 'checking'" class="mt-1 text-[11px] text-muted">
+            Tekshirilmoqda…
+          </p>
+          <p
+            v-else-if="!editing && loginStatus === 'free' && !errors.login"
+            class="mt-1 flex items-center gap-1 text-[11px] font-medium text-[#2f8f16]"
+          >
+            <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            Bu login bo'sh
           </p>
           <p v-if="errors.login" class="mt-1 text-xs text-destructive">{{ errors.login }}</p>
         </div>

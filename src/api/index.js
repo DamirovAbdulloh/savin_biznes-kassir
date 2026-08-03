@@ -101,6 +101,13 @@ export const cashiersApi = {
     const { data } = await client.post("my-business/cashiers/", payload);
     return data;
   },
+  // Login bandligini jonli tekshirish (yozayotganda) — { login, available }
+  async checkLogin(login) {
+    const { data } = await client.get("my-business/cashiers/check-login/", {
+      params: { login },
+    });
+    return data;
+  },
   // payload: { full_name, is_active } — backend'da alohida toggle endpoint yo'q,
   // shu sabab holatni ham shu PATCH orqali o'zgartiramiz.
   async update(id, payload) {
