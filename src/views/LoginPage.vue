@@ -49,7 +49,7 @@ function copyPhone() {
   <div class="login-bg relative flex min-h-screen items-center justify-center overflow-hidden p-4">
     <AnimatedBackground />
 
-    <div class="relative z-10 w-full max-w-md rounded-3xl bg-white/90 p-8 shadow-2xl backdrop-blur-sm">
+    <div class="relative z-10 w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl">
       <!-- Logo — dizayndagidek yorqin yashil yumaloq kvadrat + qora belgi -->
       <div class="mb-6 flex h-24 w-24 items-center justify-center rounded-2xl" style="background: #7ed957;">
         <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-12 w-12">
@@ -121,7 +121,7 @@ function copyPhone() {
 
         <button type="submit"
           class="h-11 w-full rounded-xl text-sm font-semibold text-white shadow-md transition hover:opacity-90 disabled:opacity-60"
-          style="background: #6fd94a;" :disabled="loading">
+          style="background: #7ed957;" :disabled="loading">
           {{ loading ? "Yuklanmoqda..." : "Kirish" }}
         </button>
 
@@ -160,37 +160,31 @@ function copyPhone() {
   </div>
 </template>
 <style scoped>
+/* Dizayndagidek: ochroq, yumshoqroq yashil "mesh". Yorug' burchak yuqori-chapda,
+   yorqin (lekin och) yashil porloq markaz-past qismda. Qorong'i o'rmon-yashil
+   burchaklar olib tashlandi — ranglar yengil aralashadi. */
 .login-bg {
-  background-color: #c6f7a9;
+  background-color: #e9fbdd;
   background-image:
-    radial-gradient(circle at 20% 30%, rgba(207, 249, 203, 0.9) 0%, transparent 40%),
-    radial-gradient(circle at 80% 20%, rgba(180, 240, 140, 0.9) 0%, transparent 45%),
-    radial-gradient(circle at 30% 80%, rgba(60, 170, 40, 0.85) 0%, transparent 45%),
-    radial-gradient(circle at 85% 75%, rgba(20, 130, 20, 0.8) 0%, transparent 50%),
-    linear-gradient(135deg, #c8fbab 0%, #8de06a 55%, #30b416 100%);
-  background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%, 100% 100%;
-  animation: liquidMove 12s ease-in-out infinite;
+    radial-gradient(circle at 16% 16%, rgba(255, 255, 255, 0.92) 0%, transparent 46%),
+    radial-gradient(circle at 62% 66%, rgba(126, 217, 87, 0.55) 0%, transparent 56%),
+    radial-gradient(circle at 88% 90%, rgba(126, 217, 87, 0.42) 0%, transparent 52%),
+    linear-gradient(135deg, #f1fee9 0%, #c3f0a3 52%, #8ee05f 100%);
+  background-size: 200% 200%, 200% 200%, 200% 200%, 100% 100%;
+  animation: liquidMove 18s ease-in-out infinite;
 }
 
 @keyframes liquidMove {
   0% {
-    background-position: 20% 30%, 80% 20%, 30% 80%, 85% 75%, 0% 0%;
-  }
-
-  25% {
-    background-position: 40% 60%, 60% 40%, 50% 60%, 60% 50%, 0% 0%;
+    background-position: 16% 16%, 62% 66%, 88% 90%, 0% 0%;
   }
 
   50% {
-    background-position: 70% 20%, 30% 70%, 70% 30%, 40% 80%, 0% 0%;
-  }
-
-  75% {
-    background-position: 30% 50%, 70% 60%, 40% 40%, 70% 30%, 0% 0%;
+    background-position: 26% 26%, 54% 58%, 80% 82%, 0% 0%;
   }
 
   100% {
-    background-position: 20% 30%, 80% 20%, 30% 80%, 85% 75%, 0% 0%;
+    background-position: 16% 16%, 62% 66%, 88% 90%, 0% 0%;
   }
 }
 </style>
