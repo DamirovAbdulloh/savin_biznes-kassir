@@ -118,7 +118,7 @@ const qrCells = computed(() => {
 
     <button
       class="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-full text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:opacity-90 active:scale-95"
-      style="background: #7ed957"
+      style="background: #89EA5C"
       @click="$emit('print')">
       <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">

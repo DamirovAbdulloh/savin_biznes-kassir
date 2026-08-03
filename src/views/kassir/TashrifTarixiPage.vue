@@ -125,7 +125,7 @@ function prevPage() {
         <div class="mb-4 flex flex-wrap items-center gap-2">
           <div class="relative min-w-[200px] flex-1 group">
             <span
-              class="absolute left-3 top-1/2 -translate-y-1/2 text-green-500 transition-transform duration-200 group-focus-within:scale-110"
+              class="absolute left-3 top-1/2 -translate-y-1/2 text-[#89EA5C] transition-transform duration-200 group-focus-within:scale-110"
               ><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1.2em"
@@ -327,7 +327,7 @@ function prevPage() {
               <tr>
                 <td colspan="7" class="py-14 text-center">
                   <div
-                    class="flex flex-col items-center gap-2 fade-in-up text-green-500"
+                    class="flex flex-col items-center gap-2 fade-in-up text-[#89EA5C]"
                   >
                     <span class="text-3xl"
                       ><svg

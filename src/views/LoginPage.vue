@@ -51,7 +51,7 @@ function copyPhone() {
 
     <div class="relative z-10 w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl">
       <!-- Logo — dizayndagidek yorqin yashil yumaloq kvadrat + qora belgi -->
-      <div class="mb-6 flex h-24 w-24 items-center justify-center rounded-2xl" style="background: #7ed957;">
+      <div class="mb-6 flex h-24 w-24 items-center justify-center rounded-2xl" style="background: #89EA5C;">
         <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-12 w-12">
           <path
             d="M32.0494 0C41.5095 8.4305e-06 49.8393 1.5731 55.7064 6.98065C61.6576 12.4659 64 20.8754 64 31.8672C64 38.5895 63.0506 44.4877 59.7844 48.6988C56.2695 53.2307 50.9828 54.7332 45.0504 54.7332C39.1149 54.7332 33.9502 53.2171 30.7554 48.4281C28.2288 44.6409 27.5084 39.5175 27.3885 33.8123L22.0315 38.1122L16.1697 30.8193L32.0436 18.0778L47.974 30.8135L42.1265 38.118L36.7537 33.8225C36.8868 39.0419 37.5692 41.7782 38.5438 43.2393C39.2492 44.2967 40.585 45.379 45.0504 45.379C49.5181 45.379 51.3662 44.2828 52.3858 42.9684C53.6543 41.3331 54.6394 38.137 54.6394 31.8674C54.6394 21.9161 52.4782 16.7307 49.3601 13.8566C46.1574 10.9049 40.8522 9.35431 32.0494 9.35431C23.6233 9.35431 18.1798 11.4296 14.8123 14.7678C11.4518 18.0991 9.36049 23.48 9.36047 31.8336C9.36047 40.1793 11.4639 45.6678 14.8629 49.0933C18.2547 52.5117 23.7013 54.646 32.0494 54.646V64C22.1963 64 13.9583 61.4673 8.21589 55.6798C2.48058 49.8995 -3.72892e-06 41.643 0 31.8336C1.31865e-05 22.0322 2.46181 13.8348 8.22007 8.12667C13.9713 2.42546 22.2126 -3.16066e-06 32.0494 0Z"
@@ -82,7 +82,7 @@ function copyPhone() {
             'h-11 w-full rounded-lg border px-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:ring-2',
             errorMessage
               ? 'border-red-400 bg-red-50 focus:ring-red-300'
-              : 'border-transparent bg-gray-100 focus:ring-green-500'
+              : 'border-transparent bg-gray-100 focus:ring-[#89EA5C]'
           ]" />
         </div>
 
@@ -94,7 +94,7 @@ function copyPhone() {
                 'h-11 w-full rounded-lg border px-3 pr-10 text-sm text-gray-900 outline-none focus:ring-2',
                 errorMessage
                   ? 'border-red-400 bg-red-50 focus:ring-red-300'
-                  : 'border-transparent bg-gray-100 focus:ring-green-500'
+                  : 'border-transparent bg-gray-100 focus:ring-[#89EA5C]'
               ]" />
             <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
               @click="showPassword = !showPassword">
@@ -112,7 +112,7 @@ function copyPhone() {
             </button>
           </div>
           <div class="flex justify-end">
-            <button type="button" class="text-xs font-medium text-green-600 hover:text-green-700"
+            <button type="button" class="text-xs font-medium text-[#89EA5C] hover:text-[#89EA5C]"
               @click="toast.info('Parolni tiklash uchun qo\'llab-quvvatlashga murojaat qiling')">
               Parolni unutdingizmi?
             </button>
@@ -121,13 +121,13 @@ function copyPhone() {
 
         <button type="submit"
           class="h-11 w-full rounded-xl text-sm font-semibold text-white shadow-md transition hover:opacity-90 disabled:opacity-60"
-          style="background: #7ed957;" :disabled="loading">
+          style="background: #89EA5C;" :disabled="loading">
           {{ loading ? "Yuklanmoqda..." : "Kirish" }}
         </button>
 
         <div class="text-center text-xs">
           <span class="text-gray-500">Muammo bormi? </span>
-          <button type="button" class="font-medium text-green-600 hover:text-green-700" @click="helpOpen = true">
+          <button type="button" class="font-medium text-[#89EA5C] hover:text-[#89EA5C]" @click="helpOpen = true">
             Yordam
           </button>
         </div>
@@ -138,7 +138,7 @@ function copyPhone() {
       @click.self="helpOpen = false">
       <div class="w-full max-w-sm rounded-3xl bg-white p-6 text-center shadow-2xl">
         <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl text-white text-2xl"
-          style="background: linear-gradient(135deg, #6fd94a, #3fae2a);">
+          style="background: linear-gradient(135deg, #89EA5C, #89EA5C);">
           <img class="w-8 h-8" src="../images/Vector.svg?url" alt="Vector" />
         </div>
         <h2 class="text-2xl font-semibold text-gray-900">Qo'llab-quvvatlash</h2>
@@ -149,7 +149,7 @@ function copyPhone() {
           class="mx-auto mt-4 flex items-center gap-2 rounded-full bg-gray-100 px-4 py-3 shadow-sm hover:bg-gray-200"
           @click="copyPhone">
           <span class="flex h-8 w-8 items-center justify-center rounded-full text-white"
-            style="background: linear-gradient(135deg, #6fd94a, #3fae2a);">
+            style="background: linear-gradient(135deg, #89EA5C, #89EA5C);">
             ☎
           </span>
           <span class="text-base font-semibold text-gray-900">+998 93 242 59 99</span>
@@ -167,8 +167,8 @@ function copyPhone() {
    Statik (animatsiya yo'q) — aks holda yashil pastdan siljib ketardi. */
 .login-bg {
   background:
-    radial-gradient(ellipse 140% 72% at 50% 116%, rgba(110, 210, 74, 0.9) 0%, rgba(126, 217, 87, 0.4) 34%, transparent 62%),
+    radial-gradient(ellipse 140% 72% at 50% 116%, rgba(137, 234, 92, 0.9) 0%, rgba(137, 234, 92, 0.4) 34%, transparent 62%),
     radial-gradient(ellipse 120% 60% at 50% -12%, rgba(255, 255, 255, 0.95) 0%, transparent 55%),
-    linear-gradient(180deg, #f4fdea 0%, #ddf7c8 40%, #a7ea7b 72%, #7ed957 100%);
+    linear-gradient(180deg, #f4fdea 0%, #ddf7c8 40%, #a7ea7b 72%, #89EA5C 100%);
 }
 </style>

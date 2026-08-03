@@ -249,11 +249,14 @@ startCamera();
 <template>
   <KassirLayout>
     <div class="space-y-4">
-      <AppCard class="flex flex-wrap items-center justify-between gap-3 p-5">
+      <!-- Sarlavha teppaga yopishib turadi (main paddingdan chiqadi) -->
+      <div
+        class="-mx-4 -mt-4 mb-1 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card px-5 py-4 md:-mx-6 md:-mt-6"
+      >
         <h1 class="text-xl font-bold">QR Skanerlash</h1>
         <WizardStepper v-if="step <= 4" :steps="STEPS" :current="step" />
         <WizardStepper v-else :steps="STEPS" :current="5" />
-      </AppCard>
+      </div>
 
       <!-- 1-QADAM: Skanerlash -->
       <div v-if="step === 1" class="grid gap-4 md:grid-cols-3">

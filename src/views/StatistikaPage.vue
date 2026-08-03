@@ -110,7 +110,7 @@ watch(range, load);
           class="relative flex gap-1 rounded-xl bg-secondary p-1 text-sm font-medium"
         >
           <span
-            class="absolute inset-y-1 rounded-lg bg-[#7ed957] shadow-md transition-transform duration-300 ease-[cubic-bezier(.34,1.56,.64,1)]"
+            class="absolute inset-y-1 rounded-lg bg-[#89EA5C] shadow-md transition-transform duration-300 ease-[cubic-bezier(.34,1.56,.64,1)]"
             :style="{
               width: `calc((100% - 8px - ${(ranges.length - 1) * 4}px) / ${ranges.length})`,
               transform: `translateX(calc(${rangeIndex} * (100% + 4px)))`,

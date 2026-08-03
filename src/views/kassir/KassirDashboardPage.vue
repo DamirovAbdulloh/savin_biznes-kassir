@@ -61,7 +61,10 @@ const statCards = [
 <template>
   <KassirLayout>
     <div class="space-y-4">
-      <AppCard class="flex flex-wrap items-center justify-between gap-3 p-5">
+      <!-- Sarlavha teppaga yopishib turadi (main paddingdan chiqadi) -->
+      <div
+        class="-mx-4 -mt-4 mb-1 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card px-5 py-4 md:-mx-6 md:-mt-6"
+      >
         <h1 class="text-xl font-bold">Dashboard</h1>
         <div class="flex gap-1 rounded-full bg-secondary/30 p-1">
           <button
@@ -78,7 +81,7 @@ const statCards = [
             {{ p.label }}
           </button>
         </div>
-      </AppCard>
+      </div>
 
       <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
         <AppCard v-for="s in statCards" :key="s.key" class="p-4">

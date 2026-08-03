@@ -414,7 +414,7 @@ function confirmLogout() {
           Orqaga
         </button>
         <button
-          class="h-11 flex-1 rounded-lg bg-[#7ed957] text-sm font-semibold text-white transition-all hover:bg-[#6fd94a] active:scale-[0.98] disabled:opacity-60"
+          class="h-11 flex-1 rounded-lg bg-[#89EA5C] text-sm font-semibold text-white transition-all hover:bg-[#89EA5C] active:scale-[0.98] disabled:opacity-60"
           :disabled="loggingOut"
           @click="confirmLogout"
         >
@@ -462,9 +462,9 @@ function confirmLogout() {
 .ring-glow {
   background: conic-gradient(
     from 0deg,
-    var(--primary, #22c55e),
+    var(--primary, #89EA5C),
     transparent 65%,
-    var(--primary, #22c55e)
+    var(--primary, #89EA5C)
   );
   animation: spinSlow 6s linear infinite;
 }

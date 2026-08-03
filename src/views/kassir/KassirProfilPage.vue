@@ -441,9 +441,9 @@ function confirmLogout() {
 .ring-glow {
   background: conic-gradient(
     from 0deg,
-    var(--primary, #22c55e),
+    var(--primary, #89EA5C),
     transparent 65%,
-    var(--primary, #22c55e)
+    var(--primary, #89EA5C)
   );
   animation: spinSlow 6s linear infinite;
 }
