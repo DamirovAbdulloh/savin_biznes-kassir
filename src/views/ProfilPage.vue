@@ -371,7 +371,7 @@ function confirmLogout() {
 
     <AppModal
       :open="showLogoutModal"
-      title="Tizimdan chiqish"
+      title=""
       @close="showLogoutModal = false"
     >
       <div class="flex flex-col items-center gap-3 py-2 text-center">
@@ -401,23 +401,20 @@ function confirmLogout() {
             </g>
           </svg>
         </div>
-        <h3 class="text-base font-semibold">
-          Siz tizimdan chiqishni xohlaysizmi?
+        <h3 class="text-lg font-bold">
+          Tizimdan chiqishni xohlaysizmi?
         </h3>
-        <p class="text-sm text-muted">
-          Agar davom etsangiz, siz qayta tizimga kirishingiz kerak bo'ladi.
-        </p>
       </div>
-      <div class="mt-4 flex justify-between gap-2">
+      <div class="mt-5 flex items-center gap-3">
         <button
-          class="rounded-full border border-border px-4 py-2 text-sm transition-colors duration-150 hover:bg-secondary"
+          class="h-11 flex-1 rounded-lg border border-border text-sm font-medium transition-colors hover:bg-secondary"
           :disabled="loggingOut"
           @click="showLogoutModal = false"
         >
           Orqaga
         </button>
         <button
-          class="rounded-full bg-destructive px-4 py-2 text-sm text-white transition-all duration-150 hover:bg-destructive/90 active:scale-95 disabled:opacity-60"
+          class="h-11 flex-1 rounded-lg bg-[#7ed957] text-sm font-semibold text-white transition-all hover:bg-[#6fd94a] active:scale-[0.98] disabled:opacity-60"
           :disabled="loggingOut"
           @click="confirmLogout"
         >

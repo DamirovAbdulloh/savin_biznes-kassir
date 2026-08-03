@@ -389,10 +389,20 @@ const ICONS = {
     <!-- Tizimdan chiqishni tasdiqlash -->
     <AppModal :open="logoutOpen" title="" @close="logoutOpen = false">
       <div class="text-center">
+        <!-- Dizayndagidek: emoji o'rniga qizil "chiqish" ikonkasi -->
         <div
-          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-2xl"
+          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-destructive"
         >
-          🚪
+          <svg
+            viewBox="0 0 24 24"
+            class="h-7 w-7"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            v-html="ICONS.logout"
+          ></svg>
         </div>
         <h2 class="text-lg font-bold">Tizimdan chiqishni xohlaysizmi?</h2>
         <div class="mt-5 flex items-center gap-3">
@@ -403,7 +413,7 @@ const ICONS = {
             Orqaga
           </button>
           <button
-            class="h-11 flex-1 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98]"
+            class="h-11 flex-1 rounded-lg bg-[#7ed957] text-sm font-semibold text-white transition-all hover:bg-[#6fd94a] active:scale-[0.98]"
             @click="confirmLogout"
           >
             Chiqish
