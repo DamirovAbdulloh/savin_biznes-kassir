@@ -88,9 +88,18 @@ const ICONS = {
     <AppModal :open="logoutOpen" title="" @close="logoutOpen = false">
       <div class="text-center">
         <div
-          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-2xl"
+          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-destructive"
         >
-          🚪
+          <svg
+            viewBox="0 0 24 24"
+            class="h-7 w-7"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            v-html="ICONS.logout"
+          ></svg>
         </div>
         <h2 class="text-lg font-bold">Tizimdan chiqishni xohlaysizmi?</h2>
         <div class="mt-5 flex items-center gap-3">
