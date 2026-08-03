@@ -160,31 +160,15 @@ function copyPhone() {
   </div>
 </template>
 <style scoped>
-/* Dizayndagidek: ochroq, yumshoqroq yashil "mesh". Yorug' burchak yuqori-chapda,
-   yorqin (lekin och) yashil porloq markaz-past qismda. Qorong'i o'rmon-yashil
-   burchaklar olib tashlandi — ranglar yengil aralashadi. */
+/* Dizayndagidek VERTIKAL: teppada oq/yorug', pastda yorqin yashil.
+   - pastki porloq: yashilni sahifa tubidan yuqoriga ko'taradi
+   - yuqori porloq: teppani oqartiradi
+   - asosiy linear: 180deg (teppa och -> past yashil)
+   Statik (animatsiya yo'q) — aks holda yashil pastdan siljib ketardi. */
 .login-bg {
-  background-color: #e9fbdd;
-  background-image:
-    radial-gradient(circle at 16% 16%, rgba(255, 255, 255, 0.92) 0%, transparent 46%),
-    radial-gradient(circle at 62% 66%, rgba(126, 217, 87, 0.55) 0%, transparent 56%),
-    radial-gradient(circle at 88% 90%, rgba(126, 217, 87, 0.42) 0%, transparent 52%),
-    linear-gradient(135deg, #f1fee9 0%, #c3f0a3 52%, #8ee05f 100%);
-  background-size: 200% 200%, 200% 200%, 200% 200%, 100% 100%;
-  animation: liquidMove 18s ease-in-out infinite;
-}
-
-@keyframes liquidMove {
-  0% {
-    background-position: 16% 16%, 62% 66%, 88% 90%, 0% 0%;
-  }
-
-  50% {
-    background-position: 26% 26%, 54% 58%, 80% 82%, 0% 0%;
-  }
-
-  100% {
-    background-position: 16% 16%, 62% 66%, 88% 90%, 0% 0%;
-  }
+  background:
+    radial-gradient(ellipse 140% 72% at 50% 116%, rgba(110, 210, 74, 0.9) 0%, rgba(126, 217, 87, 0.4) 34%, transparent 62%),
+    radial-gradient(ellipse 120% 60% at 50% -12%, rgba(255, 255, 255, 0.95) 0%, transparent 55%),
+    linear-gradient(180deg, #f4fdea 0%, #ddf7c8 40%, #a7ea7b 72%, #7ed957 100%);
 }
 </style>
