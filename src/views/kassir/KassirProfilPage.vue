@@ -180,17 +180,11 @@ function confirmLogout() {
           </div>
         </div>
 
-        <div class="mb-3 flex items-center justify-between">
+        <div class="mb-3">
           <h3 class="text-sm font-semibold">Ma'lumotlar</h3>
-          <button
-            v-if="!editing"
-            type="button"
-            class="flex h-9 items-center gap-1.5 rounded-lg border border-border px-3 text-xs font-medium transition-colors hover:bg-secondary"
-            :disabled="loading"
-            @click="startEdit"
-          >
-            ✎ Tahrirlash
-          </button>
+          <p class="mt-0.5 text-[11px] text-muted">
+            Ma'lumotlaringizni biznes egasi boshqaradi — o'zgartirish uchun unga murojaat qiling.
+          </p>
         </div>
 
         <div class="space-y-4">
@@ -321,25 +315,6 @@ function confirmLogout() {
             </p>
           </div>
 
-          <!-- Saqlash / bekor qilish -->
-          <div v-if="editing" class="flex items-center gap-3 pt-1">
-            <button
-              type="button"
-              :disabled="saving"
-              class="h-11 flex-1 rounded-lg border border-border text-sm font-medium transition-colors hover:bg-secondary disabled:opacity-60"
-              @click="cancelEdit"
-            >
-              Bekor qilish
-            </button>
-            <button
-              type="button"
-              :disabled="saving"
-              class="h-11 flex-1 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-60"
-              @click="saveProfile"
-            >
-              {{ saving ? "Saqlanmoqda..." : "Saqlash" }}
-            </button>
-          </div>
         </div>
       </AppCard>
 
