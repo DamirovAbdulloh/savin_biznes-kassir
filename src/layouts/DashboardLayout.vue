@@ -96,7 +96,8 @@ const ICONS = {
     '<path d="M3 12a9 9 0 1 0 2.6-6.3L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
   users:
     '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
-  bell: '<path d="M10.3 21a2 2 0 0 0 3.4 0"/><path d="M3.3 15.3A1 1 0 0 0 4 17h16a1 1 0 0 0 .7-1.7C19.4 14 18 12.5 18 8a6 6 0 0 0-12 0c0 4.5-1.4 6-2.7 7.3"/>',
+  bell: '<path d="M0 0h24v24H0z" fill="none" />
+  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.268 21a2 2 0 0 0 3.464 0m-10.47-5.674A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />',
   card: '<rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="12" cy="10" r="2"/><path d="M7 21v-1a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1"/>',
   logout:
     '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>',
@@ -258,7 +259,9 @@ const ICONS = {
                   v-if="item.icon === 'bell' && unreadCount > 0"
                   :class="[
                     'ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-bold text-primary-foreground',
-                    collapsed ? 'absolute right-1 top-1 ml-0 h-4 min-w-4 px-1 text-[9px]' : '',
+                    collapsed
+                      ? 'absolute right-1 top-1 ml-0 h-4 min-w-4 px-1 text-[9px]'
+                      : '',
                   ]"
                 >
                   {{ unreadCount > 9 ? "9+" : unreadCount }}

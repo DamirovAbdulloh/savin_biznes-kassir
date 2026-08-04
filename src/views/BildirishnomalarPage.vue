@@ -129,15 +129,19 @@ async function markAllRead() {
               class="relative mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary text-base transition-transform duration-150 group-hover:scale-105"
             >
               <svg
-                class="text-[#3F9A1F]"
                 xmlns="http://www.w3.org/2000/svg"
-                width="1.5em"
-                height="1.5em"
+                width="1em"
+                height="1em"
                 viewBox="0 0 24 24"
               >
-                <path d="M10.3 21a2 2 0 0 0 3.4 0" />
+                <path d="M0 0h24v24H0z" fill="none" />
                 <path
-                  d="M3.3 15.3A1 1 0 0 0 4 17h16a1 1 0 0 0 .7-1.7C19.4 14 18 12.5 18 8a6 6 0 0 0-12 0c0 4.5-1.4 6-2.7 7.3"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10.268 21a2 2 0 0 0 3.464 0m-10.47-5.674A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"
                 />
               </svg>
 
