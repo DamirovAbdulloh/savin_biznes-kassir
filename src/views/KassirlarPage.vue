@@ -14,7 +14,9 @@ const loading = ref(true);
 // Har bir kartadagi parol standart holda yashirin turadi
 const revealed = reactive({});
 
-const activeCount = computed(() => items.value.filter((c) => c.is_active).length);
+const activeCount = computed(
+  () => items.value.filter((c) => c.is_active).length,
+);
 
 // ---- Qo'shish / tahrirlash ----
 const formOpen = ref(false);
@@ -37,7 +39,11 @@ const loginStatus = ref("");
 let loginCheckTimer = null;
 
 function loginLocal(val) {
-  return (val || "").trim().toLowerCase().split("@")[0].replace(/[^a-z0-9._-]/g, "");
+  return (val || "")
+    .trim()
+    .toLowerCase()
+    .split("@")[0]
+    .replace(/[^a-z0-9._-]/g, "");
 }
 
 watch(
@@ -62,7 +68,8 @@ watch(
           loginStatus.value = "free";
         } else {
           loginStatus.value = "taken";
-          errors.login = "Bunday login allaqachon mavjud. Boshqa login tanlang.";
+          errors.login =
+            "Bunday login allaqachon mavjud. Boshqa login tanlang.";
         }
       } catch {
         loginStatus.value = "";
@@ -79,7 +86,9 @@ const PHONE_PREFIX = "+998";
 
 function formatPhone(digits) {
   const d = (digits || "").slice(0, 9);
-  return [d.slice(0, 2), d.slice(2, 5), d.slice(5, 7), d.slice(7, 9)].filter(Boolean).join(" ");
+  return [d.slice(0, 2), d.slice(2, 5), d.slice(5, 7), d.slice(7, 9)]
+    .filter(Boolean)
+    .join(" ");
 }
 const phoneDisplay = computed(() => formatPhone(form.phone_digits));
 function onPhoneInput(e) {
@@ -139,9 +148,14 @@ function validate() {
   if (!editing.value) {
     // Faqat nom qismi tekshiriladi — raqam/belgi majburiy emas, "@savin.uz"
     // avtomatik qo'shiladi.
-    const local = form.login.trim().toLowerCase().split("@")[0].replace(/[^a-z0-9._-]/g, "");
+    const local = form.login
+      .trim()
+      .toLowerCase()
+      .split("@")[0]
+      .replace(/[^a-z0-9._-]/g, "");
     if (!local) errors.login = "Loginni kiriting.";
-    else if (local.length < 2) errors.login = "Kamida 2 ta harf (faqat harf yetarli).";
+    else if (local.length < 2)
+      errors.login = "Kamida 2 ta harf (faqat harf yetarli).";
     else if (loginStatus.value === "taken")
       errors.login = "Bunday login allaqachon mavjud. Boshqa login tanlang.";
     if (!form.password || form.password.length < 6)
@@ -154,7 +168,9 @@ async function save() {
   if (!validate()) return;
   saving.value = true;
   try {
-    const phone = form.phone_digits ? `${PHONE_PREFIX}${form.phone_digits}` : "";
+    const phone = form.phone_digits
+      ? `${PHONE_PREFIX}${form.phone_digits}`
+      : "";
     if (editing.value) {
       // Login kirish uchun ishlatilgani sabab tahrirlashda o'zgarmaydi
       await cashiersApi.update(editing.value.id, {
@@ -180,7 +196,8 @@ async function save() {
     if (d.login) errors.login = [].concat(d.login)[0];
     if (d.password) errors.password = [].concat(d.password)[0];
     if (d.full_name) errors.full_name = [].concat(d.full_name)[0];
-    if (!d.login && !d.password && !d.full_name) toast.error("Xatolik yuz berdi");
+    if (!d.login && !d.password && !d.full_name)
+      toast.error("Xatolik yuz berdi");
   } finally {
     saving.value = false;
   }
@@ -241,7 +258,9 @@ function fmtPhone(p) {
           <h1 class="text-xl font-bold">Kassirlar</h1>
           <p class="mt-0.5 text-xs text-muted">
             Jami: {{ items.length }} ta kassir /
-            <span class="font-semibold text-success">{{ activeCount }} ta Faol</span>
+            <span class="font-semibold text-success"
+              >{{ activeCount }} ta Faol</span
+            >
           </p>
         </div>
         <button
@@ -262,7 +281,9 @@ function fmtPhone(p) {
 
       <AppCard v-else-if="!items.length" class="p-10 text-center">
         <p class="text-sm font-medium">Hozircha kassir qo'shilmagan</p>
-        <p class="mt-1 text-xs text-muted">"Qo'shish" tugmasi orqali kassir qo'shing.</p>
+        <p class="mt-1 text-xs text-muted">
+          "Qo'shish" tugmasi orqali kassir qo'shing.
+        </p>
       </AppCard>
 
       <!-- Kassir kartalari -->
@@ -288,7 +309,12 @@ function fmtPhone(p) {
               :title="c.is_active ? 'Nofaol qilish' : 'Faol qilish'"
               @click="toggleActive(c)"
             >
-              <span :class="['h-2 w-2 rounded-full', c.is_active ? 'bg-success' : 'bg-gray-400']" />
+              <span
+                :class="[
+                  'h-2 w-2 rounded-full',
+                  c.is_active ? 'bg-success' : 'bg-gray-400',
+                ]"
+              />
               <span :class="c.is_active ? 'text-success' : 'text-muted'">
                 {{ c.is_active ? "Faol" : "Nofaol" }}
               </span>
@@ -310,12 +336,18 @@ function fmtPhone(p) {
           <!-- Kirish ma'lumotlari -->
           <div class="mt-2 rounded-xl bg-secondary p-3">
             <p class="text-[11px] text-muted">Login</p>
-            <p class="truncate text-sm font-semibold">{{ c.login || c.email || "—" }}</p>
+            <p class="truncate text-sm font-semibold">
+              {{ c.login || c.email || "—" }}
+            </p>
             <p class="mt-2 text-[11px] text-muted">Parol</p>
             <div class="flex items-center justify-between gap-2">
               <span class="truncate font-mono text-sm">
                 {{
-                  c.password ? (revealed[c.id] ? c.password : "•".repeat(c.password.length)) : "—"
+                  c.password
+                    ? revealed[c.id]
+                      ? c.password
+                      : "•".repeat(c.password.length)
+                    : "—"
                 }}
               </span>
               <button
@@ -324,11 +356,33 @@ function fmtPhone(p) {
                 :title="revealed[c.id] ? 'Yashirish' : `Ko'rsatish`"
                 @click="revealed[c.id] = !revealed[c.id]"
               >
-                <svg v-if="revealed[c.id]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                  <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.6 21.6 0 0 1 5.06-6.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a21.6 21.6 0 0 1-2.94 3.94M14.12 14.12a3 3 0 1 1-4.24-4.24" /><line x1="1" y1="1" x2="23" y2="23" />
+                <svg
+                  v-if="revealed[c.id]"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-4 w-4"
+                >
+                  <path
+                    d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.6 21.6 0 0 1 5.06-6.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a21.6 21.6 0 0 1-2.94 3.94M14.12 14.12a3 3 0 1 1-4.24-4.24"
+                  />
+                  <line x1="1" y1="1" x2="23" y2="23" />
                 </svg>
-                <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" /><circle cx="12" cy="12" r="3" />
+                <svg
+                  v-else
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-4 w-4"
+                >
+                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+                  <circle cx="12" cy="12" r="3" />
                 </svg>
               </button>
             </div>
@@ -339,18 +393,51 @@ function fmtPhone(p) {
               class="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-lg border border-border text-sm font-medium transition-colors hover:bg-secondary"
               @click="openEdit(c)"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                <path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+              >
+                <path d="M0 0h24v24H0z" fill="none" />
+                <g
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                >
+                  <path
+                    d="m16.475 5.408l2.117 2.117m-.756-3.982L12.109 9.27a2.1 2.1 0 0 0-.58 1.082L11 13l2.648-.53c.41-.082.786-.283 1.082-.579l5.727-5.727a1.853 1.853 0 1 0-2.621-2.621"
+                  />
+                  <path
+                    d="M19 15v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3"
+                  />
+                </g>
               </svg>
+
               Tahrirlash
             </button>
             <button
               class="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-lg bg-red-50 text-sm font-medium text-destructive transition-colors hover:bg-red-100"
               @click="deleteTarget = c"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                <path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+              >
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-width="2"
+                  d="M6 6v13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6M8 6l.772-2.316A1 1 0 0 1 9.721 3h4.558a1 1 0 0 1 .949.684L16 6M4 6h16"
+                />
               </svg>
+
               O'chirish
             </button>
           </div>
@@ -379,7 +466,9 @@ function fmtPhone(p) {
               errors.full_name ? 'border-destructive' : 'border-border',
             ]"
           />
-          <p v-if="errors.full_name" class="mt-1 text-xs text-destructive">{{ errors.full_name }}</p>
+          <p v-if="errors.full_name" class="mt-1 text-xs text-destructive">
+            {{ errors.full_name }}
+          </p>
         </div>
 
         <div>
@@ -390,7 +479,9 @@ function fmtPhone(p) {
               errors.phone ? 'border-destructive' : 'border-border',
             ]"
           >
-            <span class="border-r border-border px-3 text-sm text-muted">{{ PHONE_PREFIX }}</span>
+            <span class="border-r border-border px-3 text-sm text-muted">{{
+              PHONE_PREFIX
+            }}</span>
             <input
               :value="phoneDisplay"
               inputmode="numeric"
@@ -400,11 +491,15 @@ function fmtPhone(p) {
               @input="onPhoneInput"
             />
           </div>
-          <p v-if="errors.phone" class="mt-1 text-xs text-destructive">{{ errors.phone }}</p>
+          <p v-if="errors.phone" class="mt-1 text-xs text-destructive">
+            {{ errors.phone }}
+          </p>
         </div>
 
         <div>
-          <label class="text-sm font-medium">Login {{ editing ? "" : "*" }}</label>
+          <label class="text-sm font-medium"
+            >Login {{ editing ? "" : "*" }}</label
+          >
           <div
             :class="[
               'mt-1 flex h-11 w-full items-center overflow-hidden rounded-lg border bg-input focus-within:ring-2 focus-within:ring-primary/40',
@@ -418,30 +513,49 @@ function fmtPhone(p) {
               placeholder="masalan: baxtiyor"
               class="h-full flex-1 bg-transparent px-3 text-sm outline-none disabled:cursor-not-allowed"
             />
-            <span class="border-l border-border px-3 text-sm text-muted">@savin.uz</span>
+            <span class="border-l border-border px-3 text-sm text-muted"
+              >@savin.uz</span
+            >
           </div>
           <p v-if="editing" class="mt-1 text-[11px] text-muted">
             Login kirish uchun ishlatiladi — o'zgartirib bo'lmaydi.
           </p>
           <p v-else class="mt-1 text-[11px] text-muted">
             Faqat nom yozing — raqam yoki belgi shart emas. Kassir
-            <span class="font-medium">{{ (form.login || "login").toLowerCase().split("@")[0] }}@savin.uz</span>
+            <span class="font-medium"
+              >{{
+                (form.login || "login").toLowerCase().split("@")[0]
+              }}@savin.uz</span
+            >
             bilan kiradi.
           </p>
           <!-- Jonli tekshiruv: band bo'lsa errors.login (qizil) chiqadi -->
-          <p v-if="!editing && loginStatus === 'checking'" class="mt-1 text-[11px] text-muted">
+          <p
+            v-if="!editing && loginStatus === 'checking'"
+            class="mt-1 text-[11px] text-muted"
+          >
             Tekshirilmoqda…
           </p>
           <p
             v-else-if="!editing && loginStatus === 'free' && !errors.login"
             class="mt-1 flex items-center gap-1 text-[11px] font-medium text-[#2f8f16]"
           >
-            <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              viewBox="0 0 24 24"
+              class="h-3 w-3"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <path d="M20 6 9 17l-5-5" />
             </svg>
             Bu login bo'sh
           </p>
-          <p v-if="errors.login" class="mt-1 text-xs text-destructive">{{ errors.login }}</p>
+          <p v-if="errors.login" class="mt-1 text-xs text-destructive">
+            {{ errors.login }}
+          </p>
         </div>
 
         <div v-if="!editing">
@@ -455,11 +569,17 @@ function fmtPhone(p) {
               errors.password ? 'border-destructive' : 'border-border',
             ]"
           />
-          <p v-if="errors.password" class="mt-1 text-xs text-destructive">{{ errors.password }}</p>
+          <p v-if="errors.password" class="mt-1 text-xs text-destructive">
+            {{ errors.password }}
+          </p>
         </div>
 
         <label class="flex items-center gap-2 text-sm">
-          <input v-model="form.is_active" type="checkbox" class="h-4 w-4 accent-primary" />
+          <input
+            v-model="form.is_active"
+            type="checkbox"
+            class="h-4 w-4 accent-primary rounded"
+          />
           Faol
         </label>
 
@@ -488,13 +608,26 @@ function fmtPhone(p) {
         <div
           class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-destructive"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-7 w-7">
-            <path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" />
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-7 w-7"
+          >
+            <path d="M3 6h18" />
+            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+            <line x1="10" y1="11" x2="10" y2="17" />
+            <line x1="14" y1="11" x2="14" y2="17" />
           </svg>
         </div>
         <h2 class="text-lg font-bold">Rostan ham o'chirmoqchimisiz?</h2>
         <p class="mt-1 text-xs text-muted">
-          Kassir o'chiriladi va u boshqa panelga kira olmaydi.<br />Bu amalni qaytarib bo'lmaydi.
+          Kassir o'chiriladi va u boshqa panelga kira olmaydi.<br />Bu amalni
+          qaytarib bo'lmaydi.
         </p>
         <div class="mt-4 rounded-xl bg-secondary p-4 text-left">
           <p class="font-bold">{{ deleteTarget.full_name }}</p>
@@ -552,7 +685,12 @@ function fmtPhone(p) {
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
   animation: shimmer 1.4s infinite;
 }
 

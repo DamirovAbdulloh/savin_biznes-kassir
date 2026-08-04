@@ -225,6 +225,17 @@ function confirmLogout() {
                 />
               </div>
             </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-muted"
+                >Tavsif</label
+              >
+              <textarea
+                v-model="profile.description"
+                rows="3"
+                :disabled="loading"
+                class="w-full resize-none rounded-lg border border-transparent bg-input px-3 py-2.5 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
+              ></textarea>
+            </div>
             <div class="grid gap-4 sm:grid-cols-2">
               <div>
                 <label class="mb-1 block text-xs font-medium text-muted"
@@ -249,22 +260,26 @@ function confirmLogout() {
                 />
               </div>
             </div>
-            <div>
-              <label class="mb-1 block text-xs font-medium text-muted"
-                >Tavsif</label
+            <div
+              class="flex items-start gap-2 rounded-lg bg-accent px-3 py-2 text-[11px] text-accent-foreground"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="mt-0.5 h-3.5 w-3.5 shrink-0"
               >
-              <textarea
-                v-model="profile.description"
-                rows="3"
-                :disabled="loading"
-                class="w-full resize-none rounded-lg border border-transparent bg-input px-3 py-2.5 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
-              ></textarea>
-            </div>
-            <div class="flex items-start gap-2 rounded-lg bg-accent px-3 py-2 text-[11px] text-accent-foreground">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-3.5 w-3.5 shrink-0">
-                <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
               </svg>
-              <span>Ma'lumotlar to'g'ridan-to'g'ri o'zgarmaydi — "So'rov yuborish" bosilganda adminга boradi, tasdiqlangach kuchga kiradi.</span>
+              <span
+                >Ma'lumotlar to'g'ridan-to'g'ri o'zgarmaydi — "So'rov yuborish"
+                bosilganda adminга boradi, tasdiqlangach kuchga kiradi.</span
+              >
             </div>
           </div>
         </AppCard>
@@ -369,11 +384,7 @@ function confirmLogout() {
       </div>
     </div>
 
-    <AppModal
-      :open="showLogoutModal"
-      title=""
-      @close="showLogoutModal = false"
-    >
+    <AppModal :open="showLogoutModal" title="" @close="showLogoutModal = false">
       <div class="flex flex-col items-center gap-3 py-2 text-center">
         <div
           class="flex h-14 w-14 items-center justify-center rounded-full bg-[#FEE4E2] text-2xl text-red-600"
@@ -401,9 +412,7 @@ function confirmLogout() {
             </g>
           </svg>
         </div>
-        <h3 class="text-lg font-bold">
-          Tizimdan chiqishni xohlaysizmi?
-        </h3>
+        <h3 class="text-lg font-bold">Tizimdan chiqishni xohlaysizmi?</h3>
       </div>
       <div class="mt-5 flex items-center gap-3">
         <button
@@ -462,9 +471,9 @@ function confirmLogout() {
 .ring-glow {
   background: conic-gradient(
     from 0deg,
-    var(--primary, #89EA5C),
+    var(--primary, #89ea5c),
     transparent 65%,
-    var(--primary, #89EA5C)
+    var(--primary, #89ea5c)
   );
   animation: spinSlow 6s linear infinite;
 }

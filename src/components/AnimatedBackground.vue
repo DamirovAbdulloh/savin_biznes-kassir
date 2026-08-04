@@ -16,7 +16,7 @@ defineProps({
 <style scoped>
 .login-bg {
     background-color: #eafbe0;
-    background-image:
+    background-image:   
         radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.9) 0%, transparent 40%),
         radial-gradient(circle at 80% 20%, rgba(180, 240, 140, 0.9) 0%, transparent 45%),
         radial-gradient(circle at 30% 80%, rgba(60, 170, 40, 0.85) 0%, transparent 45%),
