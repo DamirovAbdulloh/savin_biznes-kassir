@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, watch, nextTick } from "vue";
 import DashboardLayout from "@/layouts/DashboardLayout.vue";
+import PageHeader from "@/components/PageHeader.vue";
 import AppCard from "@/components/AppCard.vue";
 import { historyApi } from "@/api";
 import { groupByDay, topCashiers, topClients, summarize } from "@/utils/stats";
@@ -98,14 +99,8 @@ watch(range, load);
 <template>
   <DashboardLayout>
     <div class="space-y-4">
-      <!-- Sarlavha satri dizayndagidek teppaga yopishib turadi (main paddingdan
-           chiqib, sahifa yuqorisiga tegib turadigan oq panel). -->
-      <div
-        class="reveal -mx-4 -mt-4 mb-1 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card px-5 py-4 md:-mx-6 md:-mt-6"
-        style="--d: 0ms"
-      >
-        <h1 class="text-xl font-bold">Statistika</h1>
-
+      <!-- Sarlavha satri teppaga va yonlarga yopishib turadi -->
+      <PageHeader title="Statistika">
         <div
           class="relative flex gap-1 rounded-xl bg-secondary p-1 text-sm font-medium"
         >
@@ -132,7 +127,7 @@ watch(range, load);
             {{ r.label }}
           </button>
         </div>
-      </div>
+      </PageHeader>
 
       <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
         <AppCard

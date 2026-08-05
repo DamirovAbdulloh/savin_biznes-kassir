@@ -223,8 +223,12 @@ export const cashierApi = {
   // ✅ REAL backend: transactions/urls.py -> POST transactions/
   // Kutilgan payload: { customer_name, customer_phone?, service_name,
   // service_category?, purchase_amount, discount_percent, comment? }
+  // `customer_id` — QR/4 xonali kod orqali topilgan mijozning hisobi.
+  // U yuborilmasa mobil ilovada "tejagan summa" ko'rinmaydi (tranzaksiya
+  // hech qaysi mijozga bog'lanmay qoladi).
   async applyDiscount(payload) {
     const { data } = await client.post("transactions/", {
+      customer: payload.customer_id || null,
       customer_name: payload.customer_name || "",
       customer_phone: payload.customer_phone || "",
       service_name: payload.service_name || "",

@@ -381,7 +381,10 @@ const ICONS = {
       class="flex-1 pb-28 pt-16 transition-[margin] duration-300 ease-in-out md:pb-0 md:pt-0"
       :class="collapsed ? 'md:ml-[76px]' : 'md:ml-64'"
     >
-      <div class="mx-auto max-w-7xl p-4 md:p-6">
+      <!-- max-w/mx-auto olib tashlandi: sahifa sarlavhalari yonlarga to'liq
+           yopishishi kerak, markazlashtirilgan konteyner esa chetlarda
+           bo'shliq qoldirardi. -->
+      <div class="w-full p-4 md:p-6">
         <slot />
       </div>
     </main>

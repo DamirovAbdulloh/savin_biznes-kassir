@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { RouterLink } from "vue-router";
 import KassirLayout from "@/layouts/KassirLayout.vue";
+import PageHeader from "@/components/PageHeader.vue";
 import AppCard from "@/components/AppCard.vue";
 import { cashierApi } from "@/api";
 
@@ -61,11 +62,8 @@ const statCards = [
 <template>
   <KassirLayout>
     <div class="space-y-4">
-      <!-- Sarlavha teppaga yopishib turadi (main paddingdan chiqadi) -->
-      <div
-        class="-mx-4 -mt-4 mb-1 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card px-5 py-4 md:-mx-6 md:-mt-6"
-      >
-        <h1 class="text-xl font-bold">Dashboard</h1>
+      <!-- Sarlavha teppaga va yonlarga yopishib turadi -->
+      <PageHeader title="Dashboard">
         <div class="flex gap-1 rounded-full bg-secondary/30 p-1">
           <button
             v-for="p in periods"
@@ -81,7 +79,7 @@ const statCards = [
             {{ p.label }}
           </button>
         </div>
-      </div>
+      </PageHeader>
 
       <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
         <AppCard v-for="s in statCards" :key="s.key" class="p-4">

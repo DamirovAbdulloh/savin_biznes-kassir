@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, ref, onMounted, computed } from "vue";
 import DashboardLayout from "@/layouts/DashboardLayout.vue";
+import PageHeader from "@/components/PageHeader.vue";
 import AppCard from "@/components/AppCard.vue";
 import AppModal from "@/components/AppModal.vue";
 import { useToastStore } from "@/stores/toast";
@@ -116,8 +117,7 @@ function confirmLogout() {
 <template>
   <DashboardLayout>
     <div class="space-y-4 page-enter">
-      <AppCard class="flex items-center justify-between p-5">
-        <h1 class="text-xl font-bold tracking-tight">Profil</h1>
+      <PageHeader title="Profil">
         <button
           class="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md active:scale-95 disabled:opacity-70"
           :disabled="saving || loading"
@@ -131,7 +131,7 @@ function confirmLogout() {
             Yuborilmoqda…
           </span>
         </button>
-      </AppCard>
+      </PageHeader>
 
       <div class="grid gap-4 lg:grid-cols-[2fr_1fr] items-start">
         <!-- LEFT: profile card -->

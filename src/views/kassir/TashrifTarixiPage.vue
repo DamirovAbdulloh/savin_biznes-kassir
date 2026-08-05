@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import KassirLayout from "@/layouts/KassirLayout.vue";
+import PageHeader from "@/components/PageHeader.vue";
 import AppCard from "@/components/AppCard.vue";
 import DateRangePicker from "@/components/DateRangePicker.vue";
 import { cashierApi } from "@/api";
@@ -117,9 +118,7 @@ function prevPage() {
 <template>
   <KassirLayout>
     <div class="space-y-4 page-enter">
-      <AppCard class="p-5">
-        <h1 class="text-xl font-bold tracking-tight">Tashrif tarixi</h1>
-      </AppCard>
+      <PageHeader title="Tashrif tarixi" />
 
       <AppCard class="p-5 overflow-visible">
         <div class="mb-4 flex flex-wrap items-center gap-2">

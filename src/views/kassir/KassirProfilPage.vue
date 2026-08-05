@@ -2,6 +2,7 @@
 import { reactive, ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import KassirLayout from "@/layouts/KassirLayout.vue";
+import PageHeader from "@/components/PageHeader.vue";
 import AppCard from "@/components/AppCard.vue";
 import AppModal from "@/components/AppModal.vue";
 import { useToastStore } from "@/stores/toast";
@@ -139,9 +140,7 @@ function confirmLogout() {
 <template>
   <KassirLayout>
     <div class="space-y-4 page-enter">
-      <AppCard class="p-5">
-        <h1 class="text-xl font-bold tracking-tight">Profil</h1>
-      </AppCard>
+      <PageHeader title="Profil" />
 
       <AppCard
         class="mx-auto max-w-xl p-6 transition-all duration-200 hover:shadow-lg rise"

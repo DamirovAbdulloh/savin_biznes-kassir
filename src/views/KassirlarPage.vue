@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, reactive, computed, watch } from "vue";
 import DashboardLayout from "@/layouts/DashboardLayout.vue";
+import PageHeader from "@/components/PageHeader.vue";
 import AppCard from "@/components/AppCard.vue";
 import AppModal from "@/components/AppModal.vue";
 import { cashiersApi } from "@/api";
@@ -253,23 +254,22 @@ function fmtPhone(p) {
   <DashboardLayout>
     <div class="space-y-4">
       <!-- Sarlavha -->
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 class="text-xl font-bold">Kassirlar</h1>
+      <PageHeader title="Kassirlar">
+        <template #subtitle>
           <p class="mt-0.5 text-xs text-muted">
             Jami: {{ items.length }} ta kassir /
             <span class="font-semibold text-success"
               >{{ activeCount }} ta Faol</span
             >
           </p>
-        </div>
+        </template>
         <button
           class="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-md active:scale-95"
           @click="openCreate"
         >
           <span class="text-base leading-none">+</span> Qo'shish
         </button>
-      </div>
+      </PageHeader>
 
       <div v-if="loading" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <AppCard v-for="n in 3" :key="n" class="p-5">

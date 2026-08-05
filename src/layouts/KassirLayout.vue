@@ -79,7 +79,9 @@ const ICONS = {
     </nav>
 
     <main class="flex-1 pb-20 pt-16 md:ml-64 md:pb-0 md:pt-0">
-      <div class="mx-auto max-w-6xl p-4 md:p-6">
+      <!-- Sarlavha yonlarga to'liq yopishishi uchun markazlashtirilgan
+           konteyner (mx-auto max-w-6xl) olib tashlandi. -->
+      <div class="w-full p-4 md:p-6">
         <slot />
       </div>
     </main>

@@ -2,6 +2,7 @@
 import { ref, computed, onBeforeUnmount, watch } from "vue";
 import { useRouter } from "vue-router";
 import KassirLayout from "@/layouts/KassirLayout.vue";
+import PageHeader from "@/components/PageHeader.vue";
 import AppCard from "@/components/AppCard.vue";
 import WizardStepper from "@/components/kassir/WizardStepper.vue";
 import NumericKeypad from "@/components/kassir/NumericKeypad.vue";
@@ -103,9 +104,23 @@ async function onQrDetected(code) {
   }
 }
 
+// Faqat 4 xonali kod: mijozning ilovasida har 5 daqiqada yangilanadi.
+// Telefon raqami QABUL QILINMAYDI (raqam o'zgarmaydi — xavfsiz emas).
+function onManualInput(e) {
+  const digits = (e.target.value || "").replace(/\D/g, "").slice(0, 4);
+  manualCode.value = digits;
+  // 4 ta raqam kiritilishi bilan avtomatik tekshiramiz
+  if (digits.length === 4) submitManualCode();
+}
+
 async function submitManualCode() {
-  if (!manualCode.value.trim()) return;
-  await onQrDetected(manualCode.value.trim());
+  const code = manualCode.value.trim();
+  if (code.length !== 4) {
+    toast.info("Kod 4 xonali bo'lishi kerak");
+    return;
+  }
+  await onQrDetected(code);
+  manualCode.value = "";
 }
 
 onBeforeUnmount(stopCamera);
@@ -155,6 +170,10 @@ async function confirmTransaction() {
       service_name: selectedServiceName.value,
       comment: comment.value,
       customer_name: customer.value?.full_name,
+      // Mijoz ilovasida "tejagan summa" ko'rinishi uchun tranzaksiya
+      // mijozning hisobiga bog'lanadi (id + telefon zaxira sifatida).
+      customer_id: customer.value?.id,
+      customer_phone: customer.value?.phone_number,
     });
     result.value = {
       ...data,
@@ -249,14 +268,11 @@ startCamera();
 <template>
   <KassirLayout>
     <div class="space-y-4">
-      <!-- Sarlavha teppaga yopishib turadi (main paddingdan chiqadi) -->
-      <div
-        class="-mx-4 -mt-4 mb-1 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card px-5 py-4 md:-mx-6 md:-mt-6"
-      >
-        <h1 class="text-xl font-bold">QR Skanerlash</h1>
+      <!-- Sarlavha teppaga va yonlarga yopishib turadi -->
+      <PageHeader title="QR Skanerlash">
         <WizardStepper v-if="step <= 4" :steps="STEPS" :current="step" />
         <WizardStepper v-else :steps="STEPS" :current="5" />
-      </div>
+      </PageHeader>
 
       <!-- 1-QADAM: Skanerlash -->
       <div v-if="step === 1" class="grid gap-4 md:grid-cols-3">
@@ -311,13 +327,17 @@ startCamera();
 
           <div class="space-y-1.5">
             <label class="text-xs font-medium text-gray-700"
-              >QR kod ishlamasa, qo'lda kiriting</label
+              >QR kod ishlamasa, 4 xonali kodni kiriting</label
             >
             <div class="flex gap-2">
               <input
-                v-model="manualCode"
-                placeholder="Kod"
-                class="h-10 w-full rounded-lg border border-transparent bg-input px-3 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+                :value="manualCode"
+                inputmode="numeric"
+                autocomplete="off"
+                maxlength="4"
+                placeholder="0000"
+                class="h-11 w-full rounded-lg border border-transparent bg-input px-3 text-center text-lg font-bold tracking-[0.5em] tabular-nums outline-none focus:ring-2 focus:ring-primary/30"
+                @input="onManualInput"
                 @keyup.enter="submitManualCode"
               />
               <button
@@ -327,6 +347,10 @@ startCamera();
                 OK
               </button>
             </div>
+            <p class="text-[11px] text-muted">
+              Kodni mijoz ilovadagi QR ekranidan o'qiydi. Telefon raqami
+              qabul qilinmaydi.
+            </p>
           </div>
         </AppCard>
       </div>

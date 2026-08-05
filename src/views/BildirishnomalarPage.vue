@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import DashboardLayout from "@/layouts/DashboardLayout.vue";
+import PageHeader from "@/components/PageHeader.vue";
 import AppCard from "@/components/AppCard.vue";
 import { notificationsApi } from "@/api";
 import { useToastStore } from "@/stores/toast";
@@ -74,15 +75,14 @@ async function markAllRead() {
 <template>
   <DashboardLayout>
     <div class="space-y-4 page-enter">
-      <AppCard class="flex items-center justify-between p-5">
-        <div>
-          <h1 class="text-xl font-bold tracking-tight">Bildirishnomalar</h1>
+      <PageHeader title="Bildirishnomalar">
+        <template #subtitle>
           <p class="text-xs text-muted">
             <Transition name="count" mode="out-in">
               <span :key="unreadCount">{{ unreadCount }} ta o'qilmagan</span>
             </Transition>
           </p>
-        </div>
+        </template>
         <button
           class="rounded-full border border-border px-4 py-2 text-sm font-medium transition-all duration-150 hover:bg-secondary active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
           :disabled="!unreadCount || markingAll"
@@ -94,7 +94,7 @@ async function markAllRead() {
           ></span>
           <span v-else>Hammasini o'qilgan qilib belgilash</span>
         </button>
-      </AppCard>
+      </PageHeader>
 
       <AppCard class="p-2">
         <!-- Loading skeleton -->
