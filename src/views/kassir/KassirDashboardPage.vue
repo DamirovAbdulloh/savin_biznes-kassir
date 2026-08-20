@@ -64,7 +64,7 @@ const statCards = [
     <div class="space-y-4">
       <!-- Sarlavha teppaga va yonlarga yopishib turadi -->
       <PageHeader title="Dashboard">
-        <div class="flex gap-1 p-1 border border-border">
+        <div class="flex gap-1 p-1 text-muted rounded-3xl">
           <button
             v-for="p in periods"
             :key="p.key"
@@ -73,7 +73,7 @@ const statCards = [
             :class="
               period === p.key
                 ? 'bg-primary text-white shadow-sm'
-                : 'bg-white text-muted hover:bg-secondary'
+                : 'bg-white hover:bg-secondary'
             "
           >
             {{ p.label }}
