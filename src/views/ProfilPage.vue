@@ -120,7 +120,7 @@ function confirmLogout() {
     <div class="space-y-4 page-enter">
       <PageHeader title="Profil">
         <button
-          class="rounded-2xl bg-[#F5F5F5] px-5 py-2 text-sm font-semibold text-[#A2A2A2] shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md active:scale-95 disabled:opacity-70"
+          class="rounded-sm bg-[#F5F5F5] px-5 py-2 text-sm font-semibold text-[#A2A2A2] shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md active:scale-95 disabled:opacity-70"
           :disabled="saving || loading"
           @click="save"
         >
@@ -324,7 +324,7 @@ function confirmLogout() {
             </p>
 
             <button
-              class="mb-2 flex h-11 w-full items-center justify-center gap-2 rounded bg-primary text-sm font-semibold text-black shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md active:scale-95"
+              class="mb-2 flex h-11 w-full items-center justify-center gap-2 rounded-sm bg-primary text-sm font-semibold text-black shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md active:scale-95"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -345,7 +345,7 @@ function confirmLogout() {
             </button>
 
             <button
-              class="flex h-11 w-full items-center justify-center gap-2 rounded text-sm font-medium text-destructive transition-all duration-150 hover:bg-red-50 active:scale-95"
+              class="flex h-11 w-full items-center justify-center gap-2 rounded-sm text-sm font-medium text-destructive transition-all duration-150 hover:bg-red-50 active:scale-95"
               @click="showLogoutModal = true"
             >
               <svg
