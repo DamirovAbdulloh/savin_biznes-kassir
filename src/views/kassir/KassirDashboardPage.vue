@@ -92,7 +92,7 @@ const statCards = [
 
       <RouterLink
         to="/kassir/skanerlash"
-        class="flex h-14 w-full items-center justify-center gap-2 rounded-lg bg-emerald-200 text-base font-semibold text-black shadow-sm transition-all hover:bg-emerald-300 active:scale-[0.99]"
+        class="flex h-14 w-full rounded-3xl items-center justify-center gap-2 bg-[#89EA5C] text-base font-semibold text-black shadow-sm transition-all hover:bg-emerald-300 active:scale-[0.99]"
       >
         <svg
           viewBox="0 0 24 24"
@@ -161,7 +161,7 @@ const statCards = [
                 <td class="pr-3 text-muted">{{ r.service_name || "—" }}</td>
                 <td class="pr-3">
                   <span
-                    class="rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground"
+                    class="rounded-full bg-[#E4FBCC] px-2 py-0.5 text-xs font-medium text-[#89EA5C]"
                     >{{ r.applied_percent }}%</span
                   >
                 </td>
