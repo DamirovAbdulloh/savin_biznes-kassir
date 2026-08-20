@@ -62,14 +62,15 @@ function copyPhone() {
 
       <!-- Xato banneri -->
       <div v-if="errorMessage"
-        class="mt-4 flex items-center gap-2 rounded-xl border border-red-300 bg-red-100 px-3 py-2.5">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          class="h-4 w-4 shrink-0 text-red-500">
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="8" x2="12" y2="12" />
-          <line x1="12" y1="16" x2="12.01" y2="16" />
-        </svg>
-        <p class="text-xs font-medium text-red-600">{{ errorMessage }}</p>
+        class="mt-4 flex items-center gap-3 rounded-lg border border-red-400 bg-red-50 px-4 py-3">
+        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-500">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"
+            class="h-3.5 w-3.5">
+            <line x1="12" y1="5" x2="12" y2="13" stroke="white" stroke-width="2.5" stroke-linecap="round" />
+            <circle cx="12" cy="17" r="1" fill="white" />
+          </svg>
+        </div>
+        <p class="text-sm font-medium text-red-700">{{ errorMessage }}</p>
       </div>
 
       <form class="mt-6 space-y-4" @submit.prevent="handleSubmit">
