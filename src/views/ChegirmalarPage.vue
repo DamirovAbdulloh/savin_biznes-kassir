@@ -215,7 +215,7 @@ function fmtSom(v) {
           </p>
         </template>
         <button
-          class="inline-flex items-center gap-1.5 rounded-sm bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-md active:scale-95"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-md active:scale-95"
           @click="openCreate"
         >
           <span class="text-base leading-none">+</span> Qo'shish

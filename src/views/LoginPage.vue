@@ -24,14 +24,11 @@ async function handleSubmit() {
   } catch (e) {
     if (!e.response) {
       // Backend javob bermadi — server ishga tushmagan yoki manzil noto'g'ri.
-      // Avval bu holat ham "parol noto'g'ri" deb ko'rsatilardi va chalg'itardi.
       errorMessage.value =
         "Serverga ulanib bo'lmadi. Internet aloqasini yoki backend ishlab turganini tekshiring.";
     } else if (e.response.status === 400 || e.response.status === 401) {
-      errorMessage.value =
-        e.response.data?.detail ||
-        e.response.data?.non_field_errors?.[0] ||
-        "Email yoki parol noto'g'ri. Iltimos qayta tekshiring.";
+      // Login xatosi — har doim bir xil xabar ko'rsatamiz
+      errorMessage.value = "Email yoki parol noto'g'ri. Iltimos qayta tekshiring.";
     } else {
       errorMessage.value = "Kutilmagan xatolik yuz berdi. Qayta urinib ko'ring.";
     }
