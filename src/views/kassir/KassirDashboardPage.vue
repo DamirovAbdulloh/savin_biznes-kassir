@@ -92,7 +92,7 @@ const statCards = [
 
       <RouterLink
         to="/kassir/skanerlash"
-        class="flex h-14 w-full items-center justify-center gap-2 rounded-lg bg-[#89EA5C] text-base font-semibold text-black shadow-sm transition-all active:scale-[0.99]"
+        class="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#89EA5C] text-base font-semibold text-black shadow-sm transition-all active:scale-[0.99]"
       >
         <svg
           viewBox="0 0 24 24"
