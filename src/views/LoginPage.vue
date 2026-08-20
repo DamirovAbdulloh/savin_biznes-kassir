@@ -63,7 +63,7 @@ function copyPhone() {
       <!-- Xato banneri -->
       <div v-if="errorMessage"
         class="mt-4 flex items-center gap-3 rounded-lg border border-red-400 bg-red-50 px-4 py-3">
-        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-red-500">
+        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded text-white bg-red-500">
           <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
             <path d="M0 0h24v24H0z" fill="none" />
             <path fill="currentColor"
