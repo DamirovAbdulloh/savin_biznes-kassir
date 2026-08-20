@@ -324,7 +324,7 @@ function confirmLogout() {
             </p>
 
             <button
-              class="mb-2 flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-primary text-sm font-semibold text-black shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md active:scale-95"
+              class="mb-2 flex h-11 w-full items-center justify-center gap-2 rounded bg-primary text-sm font-semibold text-black shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md active:scale-95"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -345,7 +345,7 @@ function confirmLogout() {
             </button>
 
             <button
-              class="flex h-11 w-full items-center justify-center gap-2 rounded-2xl text-sm font-medium text-destructive transition-all duration-150 hover:bg-red-50 active:scale-95"
+              class="flex h-11 w-full items-center justify-center gap-2 rounded text-sm font-medium text-destructive transition-all duration-150 hover:bg-red-50 active:scale-95"
               @click="showLogoutModal = true"
             >
               <svg
