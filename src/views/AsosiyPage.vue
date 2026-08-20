@@ -3,7 +3,7 @@
     <div class="space-y-4">
       <!-- Sarlavha teppaga va yonlarga yopishib turadi (main paddingdan
            chiqadi). Barcha bo'limlarda bir xil — PageHeader komponenti. -->
-      <PageHeader title="Asosiy" :subtitle="`Bugun, ${today}`" />
+      <PageHeader class="figma-header" title="Asosiy" :subtitle="`Bugun, ${today}`" />
 
       <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
         <AppCard
@@ -203,7 +203,7 @@ const notifications = ref([]);
 
 const today = new Date().toLocaleDateString("uz-UZ", {
   day: "numeric",
-  month: "long",
+  month: "short",
   year: "numeric",
 });
 
@@ -380,5 +380,22 @@ const yTicks = [100, 70, 50, 20, 0];
     animation: none !important;
     transition: none !important;
   }
+}
+</style>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+/* Apply the Figma-like font only to this PageHeader instance */
+.figma-header {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+.figma-header h1 {
+  font-weight: 700;
+}
+
+.figma-header p {
+  font-weight: 500;
 }
 </style>

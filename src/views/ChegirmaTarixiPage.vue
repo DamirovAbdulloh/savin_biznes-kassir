@@ -178,13 +178,13 @@ async function exportCsv() {
             <input
               v-model="q"
               placeholder="Mijoz yoki kassir bo'yicha qidirish"
-              class="h-10 w-full rounded-full border border-transparent bg-input pl-9 pr-3 text-sm outline-none transition-all duration-200 focus:border-primary/40 focus:ring-4 focus:ring-primary/15"
+              class="h-10 w-full rounded-lg border border-border bg-input pl-9 pr-3 text-sm outline-none transition-all duration-200 focus:border-primary/40 focus:ring-4 focus:ring-primary/15"
             />
           </div>
 
           <div class="relative" v-click-outside="() => (filterOpen = false)">
             <button
-              class="relative flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm font-medium transition-all duration-200 hover:border-primary/40 hover:bg-secondary active:scale-95"
+              class="relative flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium transition-all duration-200 hover:border-primary/40 hover:bg-secondary active:scale-95"
               :class="filterOpen ? 'border-primary/50 bg-secondary' : ''"
               @click="filterOpen = !filterOpen"
             >
@@ -327,7 +327,7 @@ async function exportCsv() {
 
           <button
             :disabled="exporting"
-            class="flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium !text-white shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md active:scale-95 disabled:opacity-60"
+            class="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium !text-white shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md active:scale-95 disabled:opacity-60"
             @click="exportCsv"
           >
             <svg
@@ -356,14 +356,14 @@ async function exportCsv() {
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
-              <tr class="border-b text-left text-muted">
-                <th class="pb-2 font-normal">Sana</th>
-                <th class="pb-2 font-normal">Mijoz</th>
-                <th class="pb-2 font-normal">Kassir</th>
-                <th class="pb-2 font-normal">Chegirma</th>
-                <th class="pb-2 font-normal">Asl narx</th>
-                <th class="pb-2 font-normal">To'langan</th>
-              </tr>
+                <tr class="border-b text-left text-muted">
+                  <th class="pb-2 font-normal">Mijoz</th>
+                  <th class="pb-2 font-normal">Kassir</th>
+                  <th class="pb-2 font-normal">Chegirma</th>
+                  <th class="pb-2 font-normal">Asl narx</th>
+                  <th class="pb-2 font-normal">To'langan</th>
+                  <th class="pb-2 font-normal">Sana</th>
+                </tr>
             </thead>
 
             <!-- Loading skeleton -->
@@ -389,7 +389,6 @@ async function exportCsv() {
                 class="group border-b transition-colors duration-150 last:border-none hover:bg-secondary/60"
                 :style="{ transitionDelay: i * 25 + 'ms' }"
               >
-                <td class="py-3 text-muted">{{ fmtDate(r.used_at) }}</td>
                 <td class="font-medium">{{ r.customer_email || "—" }}</td>
                 <td class="text-muted">{{ r.cashier_name || "—" }}</td>
                 <td>
@@ -403,6 +402,7 @@ async function exportCsv() {
                   {{ fmt(r.purchase_amount) }}
                 </td>
                 <td class="font-semibold">{{ fmt(finalPrice(r)) }} so'm</td>
+                <td class="py-3 text-muted">{{ fmtDate(r.used_at) }}</td>
               </tr>
             </TransitionGroup>
 

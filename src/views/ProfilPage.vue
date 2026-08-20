@@ -57,8 +57,9 @@ async function load() {
     profile.work_hours_to = business.work_hours_to || "";
     categoryName.value = business.category?.name || "—";
     cashiersCount.value = business.cashiers_count ?? 0;
-    stats.customers = dash.total_customers ?? 0;
-    stats.todayRevenue = dash.today_revenue ?? 0;
+    stats.customers = dash.total_customers ?? dash.customers_count ?? 0;
+    stats.visits = dash.total_visits ?? dash.total_visits_count ?? dash.today_customers ?? 0;
+    stats.revenue = dash.total_revenue ?? dash.today_revenue ?? 0;
     stats.activePercent = dash.active_discount_percent ?? 0;
   } catch (e) {
     toast.error("Ma'lumotni yuklashda xatolik");
@@ -68,7 +69,7 @@ async function load() {
 }
 onMounted(load);
 
-const stats = reactive({ customers: 0, todayRevenue: 0, activePercent: 0 });
+const stats = reactive({ visits: 0, customers: 0, revenue: 0, activePercent: 0 });
 
 function fmt(n) {
   return Number(n || 0).toLocaleString("ru-RU");
@@ -176,7 +177,7 @@ function confirmLogout() {
                 v-model="profile.name"
                 type="text"
                 :disabled="loading"
-                class="h-11 w-full rounded-lg border border-transparent bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
+                class="h-11 w-full rounded-lg border border-border bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
               />
             </div>
             <div>
@@ -187,7 +188,7 @@ function confirmLogout() {
                 :value="categoryName"
                 type="text"
                 disabled
-                class="h-11 w-full cursor-not-allowed rounded-lg border border-transparent bg-input px-3 text-sm text-muted outline-none"
+                class="h-11 w-full cursor-not-allowed rounded-lg border border-border bg-input px-3 text-sm text-muted outline-none"
               />
             </div>
             <div>
@@ -198,7 +199,7 @@ function confirmLogout() {
                 v-model="profile.full_address"
                 type="text"
                 :disabled="loading"
-                class="h-11 w-full rounded-lg border border-transparent bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
+                class="h-11 w-full rounded-lg border border-border bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
               />
             </div>
             <div class="grid gap-4 sm:grid-cols-2">
@@ -210,7 +211,7 @@ function confirmLogout() {
                   v-model="profile.phone_number"
                   type="text"
                   :disabled="loading"
-                  class="h-11 w-full rounded-lg border border-transparent bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
+                  class="h-11 w-full rounded-lg border border-border bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
                 />
               </div>
               <div>
@@ -221,7 +222,7 @@ function confirmLogout() {
                   v-model="profile.email"
                   type="text"
                   :disabled="loading"
-                  class="h-11 w-full rounded-lg border border-transparent bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
+                  class="h-11 w-full rounded-lg border border-border bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
                 />
               </div>
             </div>
@@ -233,7 +234,7 @@ function confirmLogout() {
                 v-model="profile.description"
                 rows="3"
                 :disabled="loading"
-                class="w-full resize-none rounded-lg border border-transparent bg-input px-3 py-2.5 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
+                class="w-full resize-none rounded-lg border border-border bg-input px-3 py-2.5 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
               ></textarea>
             </div>
             <div class="grid gap-4 sm:grid-cols-2">
@@ -245,7 +246,7 @@ function confirmLogout() {
                   v-model="profile.work_hours_from"
                   type="time"
                   :disabled="loading"
-                  class="h-11 w-full rounded-lg border border-transparent bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
+                  class="h-11 w-full rounded-lg border border-border bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
                 />
               </div>
               <div>
@@ -256,7 +257,7 @@ function confirmLogout() {
                   v-model="profile.work_hours_to"
                   type="time"
                   :disabled="loading"
-                  class="h-11 w-full rounded-lg border border-transparent bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
+                  class="h-11 w-full rounded-lg border border-border bg-input px-3 text-sm outline-none transition-all duration-150 focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
                 />
               </div>
             </div>
@@ -290,33 +291,25 @@ function confirmLogout() {
             class="p-6 transition-all duration-200 hover:shadow-lg rise"
             style="animation-delay: 0.12s"
           >
-            <h3 class="mb-3 text-sm font-semibold">Statistika</h3>
+            <h3 class="mb-3 text-sm font-semibold">Statistika (jami)</h3>
             <div class="flex items-center justify-between py-2 text-sm">
-              <span class="text-muted">Mijozlar soni (jami)</span>
-              <span class="font-semibold tabular-nums">{{
-                fmt(stats.customers)
-              }}</span>
+              <span class="text-muted">Jami tashrif</span>
+              <span class="font-semibold tabular-nums">{{ fmt(stats.visits) }}</span>
             </div>
             <div class="h-px bg-border"></div>
             <div class="flex items-center justify-between py-2 text-sm">
-              <span class="text-muted">Kassirlar soni</span>
-              <span class="font-semibold tabular-nums">{{
-                fmt(cashiersCount)
-              }}</span>
+              <span class="text-muted">Mijozlar soni</span>
+              <span class="font-semibold tabular-nums">{{ fmt(stats.customers) }}</span>
             </div>
             <div class="h-px bg-border"></div>
             <div class="flex items-center justify-between py-2 text-sm">
-              <span class="text-muted">Bugungi daromad</span>
-              <span class="font-semibold tabular-nums text-success"
-                >{{ fmt(stats.todayRevenue) }} so'm</span
-              >
+              <span class="text-muted">Jami daromad</span>
+              <span class="font-semibold tabular-nums text-success">{{ fmt(stats.revenue) }} so'm</span>
             </div>
             <div class="h-px bg-border"></div>
             <div class="flex items-center justify-between py-2 text-sm">
               <span class="text-muted">Joriy chegirma foizi</span>
-              <span class="font-semibold tabular-nums"
-                >{{ stats.activePercent }}%</span
-              >
+              <span class="font-semibold tabular-nums">{{ stats.activePercent }}%</span>
             </div>
           </AppCard>
 

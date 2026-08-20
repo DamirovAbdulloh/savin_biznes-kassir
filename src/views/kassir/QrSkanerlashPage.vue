@@ -375,7 +375,7 @@ startCamera();
           </span>
           <div>
             <p class="font-semibold">{{ customer.full_name }}</p>
-            <p class="text-xs text-primary">{{ customer.membership_type }}</p>
+            <p class="text-xs text-black">{{ customer.membership_type }}</p>
           </div>
         </div>
 
@@ -520,13 +520,13 @@ startCamera();
                   .toUpperCase()
               }}
             </span>
-            <div>
-              <p class="text-sm font-semibold">{{ customer.full_name }}</p>
-              <p class="text-xs text-primary">
-                {{ customer.membership_type }}
-                <span class="text-muted">{{ customer.code }}</span>
-              </p>
-            </div>
+              <div>
+                <p class="text-sm font-semibold">{{ customer.full_name }}</p>
+                <p class="text-xs text-black">
+                  {{ customer.membership_type }}
+                  <span class="text-muted">{{ customer.code }}</span>
+                </p>
+              </div>
           </div>
           <div class="mt-4 space-y-2 border-t border-border pt-4 text-sm">
             <div class="flex justify-between">
@@ -573,10 +573,8 @@ startCamera();
             >
             <select
               v-model="serviceId"
-              class="h-10 w-full rounded-lg border bg-input px-3 text-sm outline-none focus:ring-2 focus:ring-primary/30"
-              :class="
-                validationError ? 'border-destructive' : 'border-transparent'
-              "
+              class="h-10 w-full rounded-lg border border-border bg-input px-3 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+              :class="validationError ? 'border-destructive' : ''"
             >
               <option value="" disabled>
                 {{ services.length ? "Tanlang" : "Xizmat qo'shilmagan" }}
@@ -597,7 +595,7 @@ startCamera();
               v-model="comment"
               rows="3"
               placeholder="Qo'shimcha izoh"
-              class="w-full resize-none rounded-lg border border-transparent bg-input px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+              class="w-full resize-none rounded-lg border border-border bg-input px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30"
             ></textarea>
           </div>
 
@@ -605,7 +603,13 @@ startCamera();
             <button
               @click="confirmTransaction"
               :disabled="submitting"
-              class="h-11 rounded-xl bg-primary text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
+              :class="[
+                'h-11 rounded-xl text-sm font-semibold transition-colors',
+                serviceId
+                  ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                  : 'bg-white text-black border border-border hover:bg-secondary',
+                submitting ? 'opacity-60 pointer-events-none' : ''
+              ]"
             >
               {{ submitting ? "Yuborilmoqda..." : "Tasdiqlash" }}
             </button>
@@ -689,7 +693,7 @@ startCamera();
           </div>
         </AppCard>
 
-        <AppCard id="savin-chek" class="p-6 text-sm">
+        <AppCard id="savin-chek" class="p-6 text-sm rounded-xl border border-border">
           <p class="text-center font-semibold">Savin</p>
           <p class="text-center text-xs text-muted">{{ businessName }}</p>
           <p v-if="businessAddress" class="text-center text-xs text-muted">
@@ -742,19 +746,24 @@ startCamera();
           <p class="mt-1 text-right text-xs text-muted">To'lov: naqd</p>
           <div class="mt-4 flex justify-center">
             <img
-              :src="`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=savin-receipt-${encodeURIComponent(result.id || Date.now())}`"
+              :src="`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=savin-receipt-${encodeURIComponent(result.id || Date.now())}`"
               alt="Chek QR"
-              class="h-28 w-28"
+              class="h-32 w-32"
             />
           </div>
           <p class="mt-2 text-center text-xs text-muted">
             Savin orqali<br />Rahmat! Qaytib keling
           </p>
           <button
-            class="no-print mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98]"
+            class="no-print mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98]"
             @click="printReceipt"
           >
-            🖨 Chekni chiqarish
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 9V2h12v7" />
+              <rect x="6" y="13" width="12" height="9" rx="2" />
+              <path d="M6 18h12" />
+            </svg>
+            Chekni chiqarish
           </button>
         </AppCard>
       </div>

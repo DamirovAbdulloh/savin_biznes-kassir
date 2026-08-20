@@ -33,6 +33,8 @@ const formErrors = reactive({});
 // ---- O'chirish tasdiqlash modali ----
 const deleteTarget = ref(null);
 const deleting = ref(false);
+// Top full-width alert (page-local, shown on successful delete)
+const topAlert = ref({ visible: false, message: "" });
 
 // Tanlangan kategoriya band bo'lsa ro'yxatdan chiqarib tashlaymiz.
 // Tahrirlashda joriy kategoriya ro'yxatda QOLADI (lekin faqat bir marta —
@@ -151,6 +153,10 @@ async function confirmDelete() {
     const name = deleteTarget.value.category;
     await discountApi.remove(deleteTarget.value.id);
     toast.success(`"${name}" chegirmasi muvaffaqiyatli o'chirildi`);
+    // show page-top alert matching design (temporary, only on this page)
+    topAlert.value.message = `"${name}" chegirmasi muvaffaqiyatli o'chirildi`;
+    topAlert.value.visible = true;
+    setTimeout(() => (topAlert.value.visible = false), 3500);
     deleteTarget.value = null;
     await load();
   } catch {
@@ -179,6 +185,26 @@ function fmtSom(v) {
 
 <template>
   <DashboardLayout>
+    <!-- Page-local top alert (matches figma full-width green bar) -->
+    <div
+      v-if="topAlert.visible"
+      class="fixed inset-x-0 top-4 z-50 flex justify-center px-4"
+      role="status"
+      aria-live="polite"
+    >
+      <div
+        class="w-full max-w-[980px] rounded-xl bg-emerald-500 text-white shadow-lg px-4 py-3 flex items-center justify-between gap-3"
+      >
+        <div class="flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 6L9 17l-5-5" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <div class="text-sm font-medium">{{ topAlert.message }}</div>
+        </div>
+        <button @click="topAlert.visible = false" class="text-white/90 text-lg leading-none">&times;</button>
+      </div>
+    </div>
+
     <div class="space-y-4">
       <!-- Sarlavha + Qo'shish -->
       <PageHeader title="Chegirmalar">
@@ -189,7 +215,7 @@ function fmtSom(v) {
           </p>
         </template>
         <button
-          class="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-md active:scale-95"
+          class="inline-flex items-center gap-1.5 rounded-3xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-md active:scale-95"
           @click="openCreate"
         >
           <span class="text-base leading-none">+</span> Qo'shish

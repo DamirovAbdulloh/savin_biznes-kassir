@@ -78,7 +78,7 @@ function copyPhone() {
       <form class="mt-6 space-y-4" @submit.prevent="handleSubmit">
         <div class="space-y-1.5">
           <label for="login" class="text-sm font-medium text-gray-800">Email</label>
-          <input id="login" v-model="login" placeholder="example@biznes.uz" :class="[
+          <input id="login" v-model="login" placeholder="Login" :class="[
             'h-11 w-full rounded-lg border px-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:ring-2',
             errorMessage
               ? 'border-red-400 bg-red-50 focus:ring-red-300'
@@ -112,7 +112,7 @@ function copyPhone() {
             </button>
           </div>
           <div class="flex justify-end">
-            <button type="button" class="text-xs font-medium text-[#89EA5C] hover:text-[#89EA5C]"
+            <button type="button" class="text-xs font-medium text-[#659057] cursor-pointer"
               @click="toast.info('Parolni tiklash uchun qo\'llab-quvvatlashga murojaat qiling')">
               Parolni unutdingizmi?
             </button>
@@ -120,14 +120,14 @@ function copyPhone() {
         </div>
 
         <button type="submit"
-          class="h-11 w-full rounded-xl text-sm font-semibold text-white shadow-md transition hover:opacity-90 disabled:opacity-60"
+          class="h-11 w-full rounded-xl text-sm font-semibold text-black shadow-md transition hover:opacity-90 disabled:opacity-60"
           style="background: #89EA5C;" :disabled="loading">
           {{ loading ? "Yuklanmoqda..." : "Kirish" }}
         </button>
 
         <div class="text-center text-xs">
           <span class="text-gray-500">Muammo bormi? </span>
-          <button type="button" class="font-medium text-[#89EA5C] hover:text-[#89EA5C]" @click="helpOpen = true">
+          <button type="button" class="font-medium text-[#659057] cursor-pointer" @click="helpOpen = true">
             Yordam
           </button>
         </div>
@@ -136,7 +136,7 @@ function copyPhone() {
 
     <div v-if="helpOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
       @click.self="helpOpen = false">
-      <div class="w-full max-w-sm rounded-3xl bg-white p-6 text-center shadow-2xl">
+      <div class="w-50% rounded-3xl bg-white p-6 text-center shadow-2xl">
         <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl text-white text-2xl"
           style="background: linear-gradient(135deg, #89EA5C, #89EA5C);">
           <img class="w-8 h-8" src="../images/Vector.svg?url" alt="Vector" />
@@ -150,7 +150,11 @@ function copyPhone() {
           @click="copyPhone">
           <span class="flex h-8 w-8 items-center justify-center rounded-full text-white"
             style="background: linear-gradient(135deg, #89EA5C, #89EA5C);">
-            ☎
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+              <path d="M0 0h24v24H0z" fill="none" />
+              <path fill="currentColor"
+                d="m19.23 15.26l-2.54-.29a1.99 1.99 0 0 0-1.64.57l-1.84 1.84a15.05 15.05 0 0 1-6.59-6.59l1.85-1.85c.43-.43.64-1.03.57-1.64l-.29-2.52a2 2 0 0 0-1.99-1.77H5.03c-1.13 0-2.07.94-2 2.07c.53 8.54 7.36 15.36 15.89 15.89c1.13.07 2.07-.87 2.07-2v-1.73c.01-1.01-.75-1.86-1.76-1.98" />
+            </svg>
           </span>
           <span class="text-base font-semibold text-gray-900">+998 93 242 59 99</span>
         </button>
