@@ -356,73 +356,76 @@ startCamera();
       </div>
 
       <!-- 2-QADAM: Mijoz -->
-      <AppCard
-        v-else-if="step === 2 && customer"
-        class="grid gap-6 p-5 md:grid-cols-2"
-      >
-        <div class="flex items-center gap-3">
-          <span
-            class="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-sm font-bold text-accent-foreground"
-          >
-            {{
-              (customer.full_name || "?")
-                .split(" ")
-                .map((p) => p[0])
-                .slice(0, 2)
-                .join("")
-                .toUpperCase()
-            }}
-          </span>
+      <div v-else-if="step === 2 && customer" class="grid gap-4 md:grid-cols-2">
+        <AppCard class="flex flex-col justify-between p-5">
           <div>
-            <p class="font-semibold">{{ customer.full_name }}</p>
-            <p class="text-xs text-black">{{ customer.membership_type }}</p>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-6 text-sm">
-          <div>
-            <p class="text-xs text-muted">Jami tashriflar</p>
-            <p class="font-semibold">{{ customer.visits_count }} ta</p>
-          </div>
-          <div>
-            <p class="text-xs text-muted">Oxirgi tashrif</p>
-            <p class="font-semibold">
-              {{ customer.last_visit_days_ago }} kun oldin
-            </p>
-          </div>
-        </div>
-
-        <div class="md:col-span-2">
-          <p class="mb-2 text-sm font-semibold">A'zolik ma'lumotlari</p>
-          <div class="space-y-2 rounded-xl bg-secondary p-3 text-sm">
-            <div class="flex justify-between">
-              <span class="text-muted">Turi</span
-              ><span class="font-medium">{{ customer.membership_type }}</span>
+            <div class="flex items-center gap-3">
+              <span
+                class="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-sm font-bold text-accent-foreground"
+              >
+                {{
+                  (customer.full_name || "?")
+                    .split(" ")
+                    .map((p) => p[0])
+                    .slice(0, 2)
+                    .join("")
+                    .toUpperCase()
+                }}
+              </span>
+              <div>
+                <p class="font-semibold">{{ customer.full_name }}</p>
+                <p class="text-xs text-black">{{ customer.membership_type }}</p>
+              </div>
             </div>
-            <div class="flex justify-between">
-              <span class="text-muted">Holati</span
-              ><span class="font-medium text-primary">{{
-                customer.membership_status
-              }}</span>
+
+            <div class="mt-4 flex items-center gap-6 text-sm">
+              <div>
+                <p class="text-xs text-muted">Jami tashriflar</p>
+                <p class="font-semibold">{{ customer.visits_count }} ta</p>
+              </div>
+              <div>
+                <p class="text-xs text-muted">Oxirgi tashrif</p>
+                <p class="font-semibold">
+                  {{ customer.last_visit_days_ago }} kun oldin
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        </AppCard>
 
-        <div class="flex gap-2 md:col-span-2">
-          <button
-            @click="goBack"
-            class="h-11 flex-1 rounded-xl border border-border text-sm font-medium hover:bg-secondary"
-          >
-            Orqaga
-          </button>
-          <button
-            @click="goToStep3"
-            class="h-11 flex-1 rounded-xl bg-primary text-sm font-semibold text-primary-foreground hover:bg-primary/90"
-          >
-            Davom etish
-          </button>
-        </div>
-      </AppCard>
+        <AppCard class="flex flex-col justify-between p-5">
+          <div>
+            <p class="mb-2 text-sm font-semibold">A'zolik ma'lumotlari</p>
+            <div class="space-y-2 rounded-xl bg-secondary p-3 text-sm">
+              <div class="flex justify-between">
+                <span class="text-muted">Turi</span
+                ><span class="font-medium">{{ customer.membership_type }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-muted">Holati</span
+                ><span class="font-medium text-primary">{{
+                  customer.membership_status
+                }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 flex flex-col gap-2">
+            <button
+              @click="goToStep3"
+              class="h-11 rounded-xl bg-primary text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            >
+              Davom etish
+            </button>
+            <button
+              @click="goBack"
+              class="h-11 rounded-xl border border-border text-sm font-medium hover:bg-secondary"
+            >
+              Orqaga
+            </button>
+          </div>
+        </AppCard>
+      </div>
 
       <!-- 3-QADAM: Summa -->
       <div v-else-if="step === 3" class="grid gap-4 md:grid-cols-2">
