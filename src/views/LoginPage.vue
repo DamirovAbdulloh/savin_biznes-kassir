@@ -140,8 +140,8 @@ function copyPhone() {
         <button
           class="absolute right-4 top-4 z-10 flex h-6 w-6 items-center justify-center rounded-full text-gray-400 hover:text-gray-600"
           @click="helpOpen = false">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            class="h-5 w-5">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" class="h-5 w-5">
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
@@ -160,24 +160,25 @@ function copyPhone() {
           <button
             class="mx-auto mt-6 flex items-center gap-3 rounded-full bg-white px-6 py-3 shadow-md hover:shadow-lg transition"
             @click="copyPhone">
-            <span class="flex h-8 w-8 items-center justify-center rounded-full text-white"
-              style="background: #25D366;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371 0-.57 0-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.869 1.23c-2.868 1.515-4.75 4.486-4.75 7.661 0 3.29 1.923 6.362 5.269 7.905 2.054.959 4.381.959 6.437 0 3.333-1.55 5.269-4.62 5.269-7.905 0-3.206-1.9-6.145-4.75-7.66-.788-.409-1.636-.615-2.522-.615m10.84-10.85c0-1.105-.896-2-2-2s-2 .895-2 2 .896 2 2 2 2-.895 2-2Z" />
+            <span class="flex h-8 w-8 items-center justify-center rounded-full text-white" style="background: #25D366;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path fill="currentColor"
+                  d="m19.23 15.26l-2.54-.29a1.99 1.99 0 0 0-1.64.57l-1.84 1.84a15.05 15.05 0 0 1-6.59-6.59l1.85-1.85c.43-.43.64-1.03.57-1.64l-.29-2.52a2 2 0 0 0-1.99-1.77H5.03c-1.13 0-2.07.94-2 2.07c.53 8.54 7.36 15.36 15.89 15.89c1.13.07 2.07-.87 2.07-2v-1.73c.01-1.01-.75-1.86-1.76-1.98" />
               </svg>
+
             </span>
             <span class="text-base font-semibold text-gray-900">+998 93 242 59 99</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              class="h-4 w-4 text-gray-400">
-              <path d="M8 16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2m-6 12h8a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z" />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" class="h-4 w-4 text-gray-400">
+              <path
+                d="M8 16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2m-6 12h8a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z" />
             </svg>
           </button>
         </div>
 
         <!-- Green gradient bottom -->
-        <div class="h-24 w-full"
-          style="background: linear-gradient(to top, rgb(64%, 85%, 75%), transparent);"></div>
+        <div class="h-24 w-full" style="background: linear-gradient(to top, rgb(64%, 85%, 75%), transparent);"></div>
       </div>
     </div>
   </div>
