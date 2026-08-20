@@ -135,7 +135,7 @@ function copyPhone() {
 
     <div v-if="helpOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
       @click.self="helpOpen = false">
-      <div class="relative w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-2xl">
+      <div class="relative w-50% overflow-hidden rounded-3xl bg-white shadow-2xl">
         <!-- Close button X -->
         <button
           class="absolute right-4 top-4 z-10 flex h-6 w-6 items-center justify-center rounded-full text-gray-400 hover:text-gray-600"
@@ -177,7 +177,7 @@ function copyPhone() {
 
         <!-- Green gradient bottom -->
         <div class="h-24 w-full"
-          style="background: linear-gradient(to top, rgba(137, 234, 92, 0.3), transparent);"></div>
+          style="background: linear-gradient(to top, rgb(64%, 85%, 75%), transparent);"></div>
       </div>
     </div>
   </div>
