@@ -64,7 +64,7 @@ const statCards = [
     <div class="space-y-4">
       <!-- Sarlavha teppaga va yonlarga yopishib turadi -->
       <PageHeader title="Dashboard">
-        <div class="flex gap-2 p-1">
+        <div class="flex gap-1 p-1 border border-border">
           <button
             v-for="p in periods"
             :key="p.key"
@@ -73,7 +73,7 @@ const statCards = [
             :class="
               period === p.key
                 ? 'bg-primary text-white shadow-sm'
-                : 'bg-white text-muted border border-border hover:bg-secondary'
+                : 'bg-white text-muted hover:bg-secondary'
             "
           >
             {{ p.label }}
@@ -92,7 +92,7 @@ const statCards = [
 
       <RouterLink
         to="/kassir/skanerlash"
-        class="flex h-14 w-full items-center justify-center gap-2 rounded-lg bg-[#89EA5C] text-base font-semibold text-black shadow-sm transition-all hover:bg-emerald-300 active:scale-[0.99]"
+        class="flex h-14 w-full items-center justify-center gap-2 rounded-lg bg-[#89EA5C] text-base font-semibold text-black shadow-sm transition-all active:scale-[0.99]"
       >
         <svg
           viewBox="0 0 24 24"
