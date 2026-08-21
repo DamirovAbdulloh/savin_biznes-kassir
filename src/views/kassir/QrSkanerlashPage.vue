@@ -454,7 +454,7 @@ startCamera();
               </span>
               <div>
                 <p class="text-sm font-semibold">{{ customer.full_name }}</p>
-                <p class="text-xs text-primary">
+                <p class="text-xs font-medium text-gray-900">
                   {{ customer.membership_type }}
                 </p>
               </div>
@@ -566,7 +566,7 @@ startCamera();
             </span>
             <div>
               <p class="text-sm font-semibold">{{ customer.full_name }}</p>
-              <p class="text-xs text-primary">{{ customer.membership_type }}</p>
+              <p class="text-xs font-medium text-gray-900">{{ customer.membership_type }}</p>
             </div>
           </div>
 
