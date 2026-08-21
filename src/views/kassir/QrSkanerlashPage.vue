@@ -696,14 +696,14 @@ startCamera();
           </div>
         </AppCard>
 
-        <AppCard id="savin-chek" class="p-5 text-sm rounded-2xl border border-gray-200 bg-white">
+        <AppCard id="savin-chek" class="p-5 text-sm rounded-2xl bg-white">
           <p class="text-center font-semibold text-gray-900">Savin</p>
           <p class="text-center text-xs text-gray-500">{{ businessName }}</p>
           <p v-if="businessAddress" class="text-center text-xs text-gray-500">
             {{ businessAddress }}
           </p>
           <div
-            class="mt-4 space-y-1.5 border-t border-dashed border-gray-200 pt-4"
+            class="mt-4 space-y-2 border-t border-[#a3a3a3] pt-4"
           >
             <div class="flex justify-between">
               <span class="text-gray-500">Sana</span
@@ -741,7 +741,7 @@ startCamera();
             </div>
           </div>
           <div
-            class="mt-3 flex items-center justify-between border-t border-dashed border-gray-200 pt-3 text-base font-bold"
+            class="mt-3 flex items-center justify-between border-t border-[#a3a3a3] pt-3 text-base font-bold"
           >
             <span>Jami</span
             ><span class="text-success">{{ fmt(result.final_amount) }} so'm</span>
@@ -749,16 +749,16 @@ startCamera();
           <p class="mt-1 text-right text-xs text-gray-500">To'lov: naqd</p>
           <div class="mt-4 flex justify-center">
             <img
-              :src="`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=savin-receipt-${encodeURIComponent(result.id || Date.now())}`"
+              :src="`https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=savin-receipt-${encodeURIComponent(result.id || Date.now())}`"
               alt="Chek QR"
-              class="h-28 w-28"
+              class="h-32 w-32"
             />
           </div>
           <p class="mt-2 text-center text-xs text-gray-500">
             Savin orqali<br />Rahmat! Qaytib keling
           </p>
           <button
-            class="no-print mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-full bg-primary text-sm font-semibold text-white transition-all hover:bg-primary/90 active:scale-[0.98]"
+            class="no-print mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-[#89ea5c] text-sm font-semibold text-[#052400] transition-all hover:bg-[#7cd952] active:scale-[0.98]"
             @click="printReceipt"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
