@@ -9,10 +9,10 @@
         <AppCard
           v-for="(s, i) in statCards"
           :key="s.label"
-          class="reveal p-4 transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
+          class="reveal border border-border p-4 transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
           :style="{ '--d': `${80 + i * 80}ms` }"
         >
-          <p class="text-xs text-muted">{{ s.label }}</p>
+          <p class="text-xs font-medium text-gray-700">{{ s.label }}</p>
           <p class="mt-1 text-2xl font-bold">
             <span class="counter">{{ s.display }}</span>
           </p>
@@ -20,7 +20,7 @@
       </div>
 
       <div class="grid gap-4 lg:grid-cols-3">
-        <AppCard class="reveal p-5 lg:col-span-2" style="--d: 400ms">
+        <AppCard class="reveal border border-border p-5 lg:col-span-2" style="--d: 400ms">
           <h2 class="mb-4 font-semibold">Oxirgi 7 kunlik tashriflar</h2>
           <div class="flex h-64 gap-3">
             <!-- y-axis -->
@@ -65,7 +65,7 @@
           </div>
         </AppCard>
 
-        <AppCard class="reveal p-5" style="--d: 480ms">
+        <AppCard class="reveal border border-border p-5" style="--d: 480ms">
           <h2 class="mb-3 flex items-center gap-2 font-semibold">
             <span class="bell inline-block"
               ><svg
@@ -117,7 +117,7 @@
         </AppCard>
       </div>
 
-      <AppCard class="reveal p-5" style="--d: 560ms">
+      <AppCard class="reveal border border-border p-5" style="--d: 560ms">
         <h2 class="mb-4 font-semibold">Oxirgi mijozlar</h2>
         <div class="overflow-x-auto">
           <table class="w-full text-sm">

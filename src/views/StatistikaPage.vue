@@ -119,7 +119,7 @@ watch(range, load);
             class="relative z-10 w-16 rounded-lg py-1.5 text-center text-sm font-medium transition-colors duration-300"
             :class="
               range.label === r.label
-                ? 'text-white'
+                ? 'text-gray-900'
                 : 'text-muted hover:text-gray-900'
             "
             @click="range = r"
@@ -131,37 +131,37 @@ watch(range, load);
 
       <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
         <AppCard
-          class="reveal p-4 text-center transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
+          class="reveal border border-border p-4 text-center transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
           style="--d: 80ms"
         >
-          <p class="text-xs text-muted">Jami tashrif</p>
+          <p class="text-xs font-medium text-gray-700">Jami tashrif</p>
           <p class="mt-1 text-2xl font-bold tabular-nums">
             {{ totals.totalVisits }}
           </p>
         </AppCard>
         <AppCard
-          class="reveal p-4 text-center transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
+          class="reveal border border-border p-4 text-center transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
           style="--d: 140ms"
         >
-          <p class="text-xs text-muted">O'rtacha xaridlar cheki</p>
+          <p class="text-xs font-medium text-gray-700">O'rtacha xaridlar cheki</p>
           <p class="mt-1 text-2xl font-bold tabular-nums">
             {{ fmt(totals.avgCheck) }} so'm
           </p>
         </AppCard>
         <AppCard
-          class="reveal p-4 text-center transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
+          class="reveal border border-border p-4 text-center transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
           style="--d: 200ms"
         >
-          <p class="text-xs text-muted">Jami daromad</p>
+          <p class="text-xs font-medium text-gray-700">Jami daromad</p>
           <p class="mt-1 text-2xl font-bold tabular-nums">
             {{ fmt(totals.totalIncome) }} so'm
           </p>
         </AppCard>
         <AppCard
-          class="reveal p-4 text-center transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
+          class="reveal border border-border p-4 text-center transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
           style="--d: 260ms"
         >
-          <p class="text-xs text-muted">Berilgan chegirma summasi</p>
+          <p class="text-xs font-medium text-gray-700">Berilgan chegirma summasi</p>
           <p class="mt-1 text-2xl font-bold tabular-nums">
             {{ fmt(totals.discountsGiven) }} so'm
           </p>
@@ -169,7 +169,7 @@ watch(range, load);
       </div>
 
       <div class="grid gap-4 lg:grid-cols-3">
-        <AppCard class="reveal p-5 lg:col-span-2" style="--d: 340ms">
+        <AppCard class="reveal border border-border p-5 lg:col-span-2" style="--d: 340ms">
           <h2 class="mb-4 font-semibold">Oxirgi 7 kunlik tashriflar</h2>
 
           <div v-if="weekdayVisits.length" class="flex h-64 gap-3">
@@ -245,7 +245,7 @@ watch(range, load);
           </p>
         </AppCard>
 
-        <AppCard class="reveal p-5" style="--d: 420ms">
+        <AppCard class="reveal border border-border p-5" style="--d: 420ms">
           <h2 class="mb-4 font-semibold">Top kassirlar</h2>
           <ul class="space-y-3">
             <li
@@ -281,7 +281,7 @@ watch(range, load);
         </AppCard>
       </div>
 
-      <AppCard class="reveal p-5" style="--d: 500ms">
+      <AppCard class="reveal border border-border p-5" style="--d: 500ms">
         <h2 class="mb-4 font-semibold">Eng faol mijozlar</h2>
         <div class="overflow-x-auto">
           <table class="w-full text-sm">

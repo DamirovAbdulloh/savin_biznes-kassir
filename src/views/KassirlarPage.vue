@@ -242,7 +242,7 @@ function initials(name) {
 function fmtDate(iso) {
   if (!iso) return "—";
   const d = new Date(iso);
-  return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 function fmtPhone(p) {
   const d = (p || "").replace(/\D/g, "").slice(-9);
@@ -323,18 +323,18 @@ function fmtPhone(p) {
 
           <!-- Statistika -->
           <div class="mt-4 grid grid-cols-2 gap-2">
-            <div class="rounded-xl bg-secondary p-3">
+            <div class="rounded-xl border border-border bg-secondary p-3">
               <p class="text-lg font-bold">{{ c.scans_count ?? 0 }}</p>
-              <p class="text-[11px] text-muted">Skaner</p>
+              <p class="text-[11px] text-gray-700">Skaner</p>
             </div>
-            <div class="rounded-xl bg-secondary p-3">
+            <div class="rounded-xl border border-border bg-secondary p-3">
               <p class="text-sm font-bold">{{ fmtDate(c.added_at) }}</p>
-              <p class="text-[11px] text-muted">Qo'shildi</p>
+              <p class="text-[11px] text-gray-700">Qo'shildi</p>
             </div>
           </div>
 
           <!-- Kirish ma'lumotlari -->
-          <div class="mt-2 rounded-xl bg-secondary p-3">
+          <div class="mt-2 rounded-xl border border-border bg-secondary p-3">
             <p class="text-[11px] text-muted">Login</p>
             <p class="truncate text-sm font-semibold">
               {{ c.login || c.email || "—" }}

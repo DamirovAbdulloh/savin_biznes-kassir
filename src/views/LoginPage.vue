@@ -62,7 +62,7 @@ function copyPhone() {
 
       <!-- Xato banneri -->
       <div v-if="errorMessage"
-        class="mt-4 flex items-center gap-3 rounded-lg border border-red-400 bg-red-50 px-4 py-3">
+        class="mt-4 flex items-center gap-3 rounded-2xl border border-red-400 bg-red-50 px-4 py-3">
         <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white bg-red-500">
           <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
             <path d="M0 0h24v24H0z" fill="none" />
@@ -111,7 +111,7 @@ function copyPhone() {
             </button>
           </div>
           <div class="flex justify-end">
-            <button type="button" class="text-xs font-medium text-[#659057] cursor-pointer"
+            <button type="button" class="text-xs font-medium text-gray-900 hover:text-gray-700 cursor-pointer"
               @click="toast.info('Parolni tiklash uchun qo\'llab-quvvatlashga murojaat qiling')">
               Parolni unutdingizmi?
             </button>
@@ -126,7 +126,7 @@ function copyPhone() {
 
         <div class="text-center text-xs">
           <span class="text-gray-500">Muammo bormi? </span>
-          <button type="button" class="font-medium text-[#659057] cursor-pointer" @click="helpOpen = true">
+          <button type="button" class="font-medium text-gray-900 hover:text-gray-700 cursor-pointer" @click="helpOpen = true">
             Yordam
           </button>
         </div>

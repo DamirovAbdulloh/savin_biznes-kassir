@@ -64,16 +64,16 @@ const statCards = [
     <div class="space-y-4">
       <!-- Sarlavha teppaga va yonlarga yopishib turadi -->
       <PageHeader title="Dashboard">
-        <div class="flex gap-1 p-1 text-muted rounded-3xl">
+        <div class="flex gap-1 p-1 text-muted rounded-xl bg-secondary">
           <button
             v-for="p in periods"
             :key="p.key"
             @click="period = p.key"
-            class="px-3 py-1.5 text-sm font-medium transition-colors rounded-3xl"
+            class="px-3 py-1.5 text-sm font-medium transition-colors rounded-lg"
             :class="
               period === p.key
-                ? 'bg-primary text-white shadow-sm'
-                : 'bg-white hover:bg-secondary'
+                ? 'bg-primary text-gray-900 shadow-sm'
+                : 'bg-transparent text-muted hover:text-gray-900'
             "
           >
             {{ p.label }}
@@ -82,8 +82,8 @@ const statCards = [
       </PageHeader>
 
       <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <AppCard v-for="s in statCards" :key="s.key" class="p-4">
-          <p class="text-xs text-muted">{{ s.label }}</p>
+        <AppCard v-for="s in statCards" :key="s.key" class="border border-border p-4">
+          <p class="text-xs font-medium text-gray-700">{{ s.label }}</p>
           <p class="mt-1 text-2xl font-bold tabular-nums">
             {{ s.format(stats[s.key]) }}
           </p>
