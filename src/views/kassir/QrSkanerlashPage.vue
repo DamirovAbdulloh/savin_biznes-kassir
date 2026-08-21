@@ -627,7 +627,7 @@ startCamera();
       </div>
 
       <!-- 5-QADAM: Muvaffaqiyat -->
-      <div v-else-if="step === 5 && result" class="grid gap-4 md:grid-cols-2">
+      <div v-else-if="step === 5 && result" class="grid gap-4 md:grid-cols-[1fr_320px]">
         <AppCard class="flex flex-col items-center p-6 text-center">
           <span
             class="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground"
@@ -696,7 +696,7 @@ startCamera();
           </div>
         </AppCard>
 
-        <AppCard id="savin-chek" class="p-6 text-sm rounded-xl border border-border">
+        <AppCard id="savin-chek" class="p-5 text-sm rounded-2xl border border-border">
           <p class="text-center font-semibold">Savin</p>
           <p class="text-center text-xs text-muted">{{ businessName }}</p>
           <p v-if="businessAddress" class="text-center text-xs text-muted">
@@ -749,16 +749,16 @@ startCamera();
           <p class="mt-1 text-right text-xs text-muted">To'lov: naqd</p>
           <div class="mt-4 flex justify-center">
             <img
-              :src="`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=savin-receipt-${encodeURIComponent(result.id || Date.now())}`"
+              :src="`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=savin-receipt-${encodeURIComponent(result.id || Date.now())}`"
               alt="Chek QR"
-              class="h-32 w-32"
+              class="h-28 w-28"
             />
           </div>
           <p class="mt-2 text-center text-xs text-muted">
             Savin orqali<br />Rahmat! Qaytib keling
           </p>
           <button
-            class="no-print mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98]"
+            class="no-print mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-full bg-primary text-sm font-semibold text-white transition-all hover:bg-primary/90 active:scale-[0.98]"
             @click="printReceipt"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
