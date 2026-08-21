@@ -696,21 +696,21 @@ startCamera();
           </div>
         </AppCard>
 
-        <AppCard id="savin-chek" class="p-5 text-sm rounded-2xl border border-border">
-          <p class="text-center font-semibold">Savin</p>
-          <p class="text-center text-xs text-muted">{{ businessName }}</p>
-          <p v-if="businessAddress" class="text-center text-xs text-muted">
+        <AppCard id="savin-chek" class="p-5 text-sm rounded-2xl border border-gray-200 bg-white">
+          <p class="text-center font-semibold text-gray-900">Savin</p>
+          <p class="text-center text-xs text-gray-500">{{ businessName }}</p>
+          <p v-if="businessAddress" class="text-center text-xs text-gray-500">
             {{ businessAddress }}
           </p>
           <div
-            class="mt-4 space-y-1.5 border-t border-dashed border-border pt-4"
+            class="mt-4 space-y-1.5 border-t border-dashed border-gray-200 pt-4"
           >
             <div class="flex justify-between">
-              <span class="text-muted">Sana</span
+              <span class="text-gray-500">Sana</span
               ><span>{{ result.time.toLocaleDateString("uz-UZ") }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-muted">Vaqt</span
+              <span class="text-gray-500">Vaqt</span
               ><span>{{
                 result.time.toLocaleTimeString("uz-UZ", {
                   hour: "2-digit",
@@ -719,34 +719,34 @@ startCamera();
               }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-muted">Kassir</span
+              <span class="text-gray-500">Kassir</span
               ><span>{{ cashierName }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-muted">Mijoz</span
+              <span class="text-gray-500">Mijoz</span
               ><span>{{ result.customer_name }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-muted">A'zolik</span
+              <span class="text-gray-500">A'zolik</span
               ><span>{{ result.membership_type }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-muted">{{ result.service_name }}</span
+              <span class="text-gray-500">{{ result.service_name }}</span
               ><span>{{ fmt(result.purchase_amount) }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-muted"
+              <span class="text-gray-500"
                 >Chegirma ({{ result.discount_percent }}%)</span
               ><span>- {{ fmt(result.discount_amount) }}</span>
             </div>
           </div>
           <div
-            class="mt-3 flex items-center justify-between border-t border-dashed border-border pt-3 text-base font-bold"
+            class="mt-3 flex items-center justify-between border-t border-dashed border-gray-200 pt-3 text-base font-bold"
           >
             <span>Jami</span
             ><span class="text-success">{{ fmt(result.final_amount) }} so'm</span>
           </div>
-          <p class="mt-1 text-right text-xs text-muted">To'lov: naqd</p>
+          <p class="mt-1 text-right text-xs text-gray-500">To'lov: naqd</p>
           <div class="mt-4 flex justify-center">
             <img
               :src="`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=savin-receipt-${encodeURIComponent(result.id || Date.now())}`"
@@ -754,7 +754,7 @@ startCamera();
               class="h-28 w-28"
             />
           </div>
-          <p class="mt-2 text-center text-xs text-muted">
+          <p class="mt-2 text-center text-xs text-gray-500">
             Savin orqali<br />Rahmat! Qaytib keling
           </p>
           <button

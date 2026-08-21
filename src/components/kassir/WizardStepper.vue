@@ -21,7 +21,7 @@ defineProps({
           {{ s.label }}
         </span>
       </div>
-      <span v-if="i < steps.length - 1" class="h-px w-6 shrink-0" :class="i + 1 < current ? 'bg-primary' : 'bg-border'"></span>
+      <span v-if="i < steps.length - 1" class="h-px w-6 shrink-0" :class="i + 1 < current ? 'bg-gray-300' : 'bg-border'"></span>
     </template>
   </div>
 </template>
