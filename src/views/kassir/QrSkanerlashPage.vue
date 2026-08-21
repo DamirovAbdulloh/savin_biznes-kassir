@@ -627,7 +627,7 @@ startCamera();
       </div>
 
       <!-- 5-QADAM: Muvaffaqiyat -->
-      <div v-else-if="step === 5 && result" class="grid gap-4 md:grid-cols-[1fr_320px]">
+      <div v-else-if="step === 5 && result" class="grid gap-4 md:grid-cols-[1fr_280px]">
         <AppCard class="flex flex-col items-center p-6 text-center">
           <span
             class="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground"
